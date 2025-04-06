@@ -12,7 +12,8 @@ export const SignUp = () => {
 
   // const navigate = useNavigate();
 
-  const url = `http://localhost:8000/api/v1/auth/register/user`;
+  const url = `https://ii-practicum-team-10-back.onrender.com/api/v1/auth/register/user`;
+
 
   const handleSignUp = async (event: FormEvent) => {
     event.preventDefault();
@@ -48,12 +49,18 @@ export const SignUp = () => {
       });
 
       if (!response.ok) {
-        const message = `Error: ${response.status}`;
-        throw new Error(message);
+        const responseData = await response.json();
+
+        if (response.status === 400 && responseData.message) {
+          setError(responseData.message); // Show specific error message from backend
+        } else {
+          setError("An error occurred. Please try again.");
+        }
+        throw new Error(`Error: ${response.status}`);
       }
+      
       const data = await response.json();
 
-      // Clear the input fields after successful sign-up
       setUser("");
       setEmail("");
       setPassword("");

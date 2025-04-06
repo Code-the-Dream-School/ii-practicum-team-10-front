@@ -1,5 +1,5 @@
-import React, { useState, FormEvent } from "react";
-
+import { useState, FormEvent } from "react";
+// import { useNavigate } from "react-router-dom";
 import {AuthenticationButtons} from "./AuthenticationButtons"
 
 export const LogIn = () => {
@@ -8,7 +8,8 @@ export const LogIn = () => {
   const [error, setError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const url = `http://localhost:8000/api/v1/auth/login`;
+  const url = 'https://ii-practicum-team-10-back.onrender.com/api/v1/auth/login';
+  // const navigate = useNavigate();
 
   const handleLogIn = async (event: FormEvent) => {
     event.preventDefault();
@@ -32,24 +33,31 @@ export const LogIn = () => {
         }),
       });
 
-      if (!response.ok) {
-        const message = `Error: ${response.status}`;
-        throw new Error(message);
-      }
-
+      if (response.ok) {
       const data = await response.json();
-      // Assuming the API returns a token on successful login
+     
       localStorage.setItem("authToken", data.token); // Save token in localStorage (or cookies)
 
       setEmail("");
       setPassword("");
       setError("");
 
-      // Redirect the user to the dashboard or home page after successful login
-      window.location.href = "/dashboard";
+      // Redirect the user to the dashboard  after successful login
+      // navigate("/dashboard");
 
+      } else {
+        const errorData = await response.json();
+        // Handle different status codes from the backend
+          if (response.status === 401) {
+            setError("Invalid credentials. Please try again.");
+          } else if (response.status === 400) {
+            setError(errorData.message || "Please provide an email and password.");
+          } else {
+            setError("Something went wrong. Please try again later.");
+          }
+      }
     } catch (error) {
-      setError("Invalid credentials. Please try again.");
+      setError("An unexpected error occurred. Please try again.");
       console.error(error);
     } finally {
       setIsSubmitting(false);
