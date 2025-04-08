@@ -1,6 +1,6 @@
 import React, { useState, FormEvent } from "react";
 import {AuthenticationButtons} from "./AuthenticationButtons"
-// import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom"; 
 
 export const SignUp = () => {
   const [user, setUser] = useState<string>("");
@@ -10,7 +10,7 @@ export const SignUp = () => {
   const [error, setError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const url = import.meta.env.VITE_API_SIGNUP_URL;
 
@@ -67,9 +67,9 @@ export const SignUp = () => {
       setConfirmedPassword("");
       setError("");
 
-      // setTimeout(() => {
-      //   navigate("/login"); 
-      // }, 2000);
+      setTimeout(() => {
+        navigate("/login"); 
+      }, 2000);
 
     } catch (error) {
       setError("An error occurred. Please try again.");

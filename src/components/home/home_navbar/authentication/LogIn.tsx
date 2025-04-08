@@ -1,5 +1,5 @@
 import { useState, FormEvent } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {AuthenticationButtons} from "./AuthenticationButtons"
 
 
@@ -11,7 +11,7 @@ export const LogIn = () => {
 
   const url = import.meta.env.VITE_API_LOGIN_URL;
   
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleLogIn = async (event: FormEvent) => {
     event.preventDefault();
@@ -45,7 +45,7 @@ export const LogIn = () => {
       setError("");
 
       // Redirect the user to the dashboard  after successful login
-      // navigate("/dashboard");
+      navigate("/dashboard");
 
       } else {
         const errorData = await response.json();
