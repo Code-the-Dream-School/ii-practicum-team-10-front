@@ -12,7 +12,7 @@ export const SignUp = () => {
 
   // const navigate = useNavigate();
 
-  const url = `https://ii-practicum-team-10-back.onrender.com/api/v1/auth/register/user`;
+  const url = import.meta.env.VITE_API_SIGNUP_URL;
 
 
   const handleSignUp = async (event: FormEvent) => {

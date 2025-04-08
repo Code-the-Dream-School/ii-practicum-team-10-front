@@ -2,13 +2,15 @@ import { useState, FormEvent } from "react";
 // import { useNavigate } from "react-router-dom";
 import {AuthenticationButtons} from "./AuthenticationButtons"
 
+
 export const LogIn = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const url = 'https://ii-practicum-team-10-back.onrender.com/api/v1/auth/login';
+  const url = import.meta.env.VITE_API_LOGIN_URL;
+  
   // const navigate = useNavigate();
 
   const handleLogIn = async (event: FormEvent) => {
