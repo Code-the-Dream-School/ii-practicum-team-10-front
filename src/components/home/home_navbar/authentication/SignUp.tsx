@@ -19,9 +19,44 @@ export const SignUp = () => {
     event.preventDefault();
     setIsSubmitting(true);
 
-    // Validation for empty fields
-    if (!email || !password || !user || !confirmedPassword) {
-      setError("Please fill in all fields");
+    // Name validation
+    if (!user) {
+      setError("Please provide a name");
+      setIsSubmitting(false);
+      return;
+    }
+    if (user.length < 3) {
+      setError("Name must be at least 3 characters long");
+      setIsSubmitting(false);
+      return;
+    }
+    if (user.length > 50) {
+      setError("Name cannot be longer than 50 characters");
+      setIsSubmitting(false);
+      return;
+    }
+  
+    // Email validation
+    const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!email) {
+      setError("Please provide an email");
+      setIsSubmitting(false);
+      return;
+    }
+    if (!emailRegex.test(email)) {
+      setError("Please provide a valid email");
+      setIsSubmitting(false);
+      return;
+    }
+  
+    // Password validation
+    if (!password) {
+      setError("Please provide a password");
+      setIsSubmitting(false);
+      return;
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
       setIsSubmitting(false);
       return;
     }
@@ -91,7 +126,7 @@ export const SignUp = () => {
         </div>
 
         {/* yellow container for inputs*/}
-        <div className="flex flex-col gap-[25px] items-center w-full h-auto bg-[#FFC277] p-6 pt-[40px] pb-[40px] rounded-2xl">
+        <div className="flex flex-col gap-[25px] items-center w-full max-w-[500px] h-auto bg-[#FFC277] p-6 pt-[40px] pb-[40px] rounded-2xl">
           {/* Name Input */}
           <input
             type="text"
@@ -100,8 +135,8 @@ export const SignUp = () => {
             id="name"
             value={user}
             onChange={(e) => setUser(e.target.value)}
-            className="border border-gray-300 bg-[#FFFFFF] w-full sm:w-[320px] h-[70px] p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+            className="border border-gray-300 bg-[#FFFFFF] w-[90%] h-[70px] p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
 
           {/* Email Input */}
           <input
@@ -111,8 +146,8 @@ export const SignUp = () => {
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="border border-gray-300 bg-[#FFFFFF] w-full sm:w-[320px] h-[70px] p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+            className="border border-gray-300 bg-[#FFFFFF] w-[90%] h-[70px] p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
 
           {/* Password Input */}
           <input
@@ -122,8 +157,8 @@ export const SignUp = () => {
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="border border-gray-300 bg-[#FFFFFF] w-full sm:w-[320px] h-[70px] p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+            className="border border-gray-300 bg-[#FFFFFF] w-[90%] h-[70px] p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
 
           {/* Confirm Password Input */}
           <input
@@ -133,8 +168,8 @@ export const SignUp = () => {
             id="confirmed_password"
             value={confirmedPassword}
             onChange={(e) => setConfirmedPassword(e.target.value)}
-            className="border border-gray-300 bg-[#FFFFFF] w-full sm:w-[320px] h-[70px] p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+            className="border border-gray-300 bg-[#FFFFFF] w-[90%] h-[70px] p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
         </div>
 
         {/* Submit Button */}
@@ -142,7 +177,8 @@ export const SignUp = () => {
           <AuthenticationButtons
             text="Sign Up"
             disabled={isSubmitting}
-                    
+            onClick={handleSignUp}
+            className= "transition-all duration-300" 
           />
         </div>
       </form>

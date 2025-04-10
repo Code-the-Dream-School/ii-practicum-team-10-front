@@ -71,15 +71,16 @@ export const LogIn = () => {
       {/* Form Container */}
       <form
         onSubmit={handleLogIn}
-        className="flex flex-col mt-[55px] gap-[25px] items-center w-[90%] sm:w-[320px] md:w-[400px] lg:w-[400px] h-auto bg-white"
+        className="flex flex-col mt-[55px] gap-[25px] items-center w-[90%] sm:w-[320px] md:w-[400px] lg:w-[400px] h-auto bg-white "
       >
         <div className="text-black font-[Roboto Mono] text-[40px] font-bold">
           Sign In
         </div>
 
         {/* Inputs */}
-        <div className="flex flex-col gap-[20px] items-center w-full max-w-[500px] bg-[#FFC277] p-6 pt-[40px] pb-[40px] rounded-2xl">
+        <div className="flex flex-col gap-[20px] items-center w-[full] max-w-[500px] bg-[#FFC277] p-6 pt-[40px] pb-[40px] rounded-2xl">
           {/* Email Input */}
+         
           <input
             type="email"
             placeholder="Enter your email"
@@ -87,10 +88,11 @@ export const LogIn = () => {
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="border border-gray-300 bg-[#FFFFFF] w-full sm:w-[320px] h-[70px] p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-gray-300 bg-[#FFFFFF] w-[90%] sm:w-[320px]  h-[70px] p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-
+         
           {/* Password Input */}
+        
           <input
             type="password"
             placeholder="Enter your password"
@@ -98,8 +100,9 @@ export const LogIn = () => {
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="border border-gray-300 bg-[#FFFFFF] w-full sm:w-[320px] h-[70px] p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-gray-300 bg-[#FFFFFF] w-[90%] sm:w-[320px]  h-[70px] p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          
         </div>
 
         {/* Submit Button */}
@@ -107,6 +110,8 @@ export const LogIn = () => {
           <AuthenticationButtons
             text="Sign In"
             disabled={isSubmitting}
+            onClick={handleLogIn}
+            className= "transition-all duration-300" 
           />
         </div>
       </form>
