@@ -1,13 +1,14 @@
 import { useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import {AuthenticationButtons} from "./AuthenticationButtons"
-
+import {Modal} from "./Modal"; 
 
 export const LogIn = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
 
   const url = import.meta.env.VITE_API_LOGIN_URL;
   
@@ -44,8 +45,10 @@ export const LogIn = () => {
       setPassword("");
       setError("");
 
+      
       // Redirect the user to the dashboard  after successful login
       navigate("/dashboard");
+      setIsModalOpen(false);
 
       } else {
         const errorData = await response.json();
@@ -67,6 +70,7 @@ export const LogIn = () => {
   };
 
   return (
+    <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
     <div className="flex flex-col items-center justify-center min-h-screen bg-white  pb-[30px]">
       {/* Form Container */}
       <form
@@ -123,5 +127,6 @@ export const LogIn = () => {
         </div>
       )}
     </div>
+    </Modal>
   );
 };
