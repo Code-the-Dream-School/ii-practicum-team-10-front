@@ -1,6 +1,7 @@
 import { useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import {AuthenticationButtons} from "./AuthenticationButtons"
+import { useAuth } from "../../../globally_shared/AuthContext";
 
 
 export const LogIn = () => {
@@ -8,6 +9,7 @@ export const LogIn = () => {
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const { setUser, setToken } = useAuth();
 
   const url = import.meta.env.VITE_API_LOGIN_URL;
   
@@ -40,12 +42,14 @@ export const LogIn = () => {
      
       localStorage.setItem("authToken", data.token); // Save token in localStorage (or cookies)
 
+      setUser(data.user);
+      setToken(data.token);
       setEmail("");
       setPassword("");
       setError("");
 
       // Redirect the user to the dashboard  after successful login
-      navigate("/dashboard");
+      navigate("/leaderboard");
 
       } else {
         const errorData = await response.json();

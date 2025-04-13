@@ -8,8 +8,8 @@ type RankingProps = {
 
 function Ranking ({ rankedUsers }: RankingProps): JSX.Element {
     return (
-        <div className="flex justify-center items-center">
-            <div className="bg-red-400 w-90 h-119 m-1 rounded-3xl"></div>
+        <div className="flex flex-col justify-center items-center">
+            <h3 className="decoration-2 text-2xl">Global Ranking</h3>
             <div className="max-h-[480px] overflow-y-auto">{rankedUsers}</div>
         </div>
     )
