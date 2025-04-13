@@ -7,14 +7,7 @@ import { useAuth } from '../../globally_shared/AuthContext';
 
 const Leaderboard: React.FC = () => {
     const { user, token } = useAuth();
-    const [rankedUsers, setRankedUsers] = useState<React.ReactElement[]>([
-        <RankedUser
-          key="ivan"
-          userName="Ivan"
-          userCharacter={<img src="images/character_img.png" className="w-16" />}
-          ranking={1}
-        />
-      ]);
+    const [rankedUsers, setRankedUsers] = useState<React.ReactElement[]>([]);
     
     const url = import.meta.env.VITE_API_TOP_USERS_URL;
     const fetchTopTenUsers = async () => {
@@ -27,6 +20,17 @@ const Leaderboard: React.FC = () => {
                 }
             })
             const data = await response.json();
+            const topUsers = data.map((topUser, index) => {
+                return(
+                    <RankedUser 
+                        key={index} 
+                        userName={topUser.name} 
+                        userCharacter={<img src="images/character_img.png" className="w-16" />} 
+                        ranking={index + 1}
+                    />
+                )
+            })
+            setRankedUsers(topUsers);
             console.log("SUCESSFUL DATA", data);
         } catch {
             throw console.error();
@@ -35,11 +39,13 @@ const Leaderboard: React.FC = () => {
     }
     
     useEffect(() => {
-        fetchTopTenUsers();
-    }, []);
+        if (token) {
+          fetchTopTenUsers();
+        }
+      }, [token]);
 
     return (
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center min-h-screen">
             <UserCharacterSummary/>
             <Ranking rankedUsers={rankedUsers}/>
         </div>

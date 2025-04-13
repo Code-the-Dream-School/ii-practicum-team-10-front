@@ -40,7 +40,7 @@ export const LogIn = () => {
       if (response.ok) {
       const data = await response.json();
      
-      localStorage.setItem("authToken", data.token); // Save token in localStorage (or cookies)
+      // localStorage.setItem("authToken", data.token); // Save token in localStorage (or cookies)
 
       setUser(data.user);
       setToken(data.token);
