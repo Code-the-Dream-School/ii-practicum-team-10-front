@@ -1,81 +1,35 @@
+
 import React, { useState, FormEvent } from "react";
-import {AuthenticationButtons} from "./AuthenticationButtons"
-import { useNavigate } from "react-router-dom"; 
+import useAuth from "../../../../hooks/useAuth"
+import { Navigate, useNavigate } from "react-router-dom"
+import { AuthenticationButtons } from "./AuthenticationButtons";
 
 export const SignUp = () => {
-  const [user, setUser] = useState<string>("");
+  const { user, register, isLoading } = useAuth();
+  const [userName, setUserName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmedPassword, setConfirmedPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
   const navigate = useNavigate();
+  
+  if (user) {
+    return <Navigate to="/dashboard"/>;
+  }
 
-  const url = import.meta.env.VITE_API_SIGNUP_URL;
-
-
-  const handleSignUp = async (event: FormEvent) => {
+  const handleSignUp = async(event: FormEvent) => {
     event.preventDefault();
-    setIsSubmitting(true);
 
-    // Validation for empty fields
-    if (!email || !password || !user || !confirmedPassword) {
+    if (!email || !password || !userName || !confirmedPassword) {
       setError("Please fill in all fields");
-      setIsSubmitting(false);
-      return;
-    }
-
-    // Check if passwords match
-    if (password !== confirmedPassword) {
-      setError("Passwords do not match");
-      setIsSubmitting(false);
       return;
     }
 
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify({
-          name: user,
-          email: email,
-          password: password,
-          verifyPassword: confirmedPassword,
-        }),
-      });
-
-      if (!response.ok) {
-        const responseData = await response.json();
-
-        if (response.status === 400 && responseData.message) {
-          setError(responseData.message); // Show specific error message from backend
-        } else {
-          setError("An error occurred. Please try again.");
-        }
-        throw new Error(`Error: ${response.status}`);
-      }
-      
-      const data = await response.json();
-
-      setUser("");
-      setEmail("");
-      setPassword("");
-      setConfirmedPassword("");
-      setError("");
-
-      setTimeout(() => {
-        navigate("/login"); 
-      }, 2000);
-
-    } catch (error) {
-      setError("An error occurred. Please try again.");
-      console.error(error);
-    } finally {
-      setIsSubmitting(false);
+      await register(userName, email, password, confirmedPassword);
+      navigate("/dashboard");
+    } catch (err: any) {
+      setError(err.message || "Login failed. Please try again.")
     }
   }
 
@@ -98,8 +52,8 @@ export const SignUp = () => {
             placeholder="Enter name"
             required
             id="name"
-            value={user}
-            onChange={(e) => setUser(e.target.value)}
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
             className="border border-gray-300 bg-[#FFFFFF] w-full sm:w-[320px] h-[70px] p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
@@ -141,7 +95,7 @@ export const SignUp = () => {
         <div className="submit-container text-center mt-6">
           <AuthenticationButtons
             text="Sign Up"
-            disabled={isSubmitting}
+            disabled={isLoading}
                     
           />
         </div>

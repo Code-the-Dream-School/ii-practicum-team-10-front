@@ -1,72 +1,37 @@
-import { useState, FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
-import {AuthenticationButtons} from "./AuthenticationButtons"
+import React, { useState, FormEvent } from "react";
+import useAuth from "../../../../hooks/useAuth"
+import { Navigate, useNavigate } from "react-router-dom"
+import { AuthenticationButtons } from "./AuthenticationButtons";
 
-
-export const LogIn = () => {
+export const LogIn: React.FC = () => {
+  const { user, login, isLoading } = useAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
-  const url = import.meta.env.VITE_API_LOGIN_URL;
-  
   const navigate = useNavigate();
 
+  if (user) {
+    return <Navigate to="/dashboard"/>;
+  }
+  
   const handleLogIn = async (event: FormEvent) => {
     event.preventDefault();
-    setIsSubmitting(true);
+    setError("") // reset error
 
     if (!email || !password) {
-      setError("Please enter both email and password.");
-      setIsSubmitting(false);
-      return;
+      setError("Please enter both email and password.")
+      return
     }
 
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      });
-
-      if (response.ok) {
-      const data = await response.json();
-     
-      localStorage.setItem("authToken", data.token); // Save token in localStorage (or cookies)
-
-      setEmail("");
-      setPassword("");
-      setError("");
-
-      // Redirect the user to the dashboard  after successful login
-      navigate("/dashboard");
-
-      } else {
-        const errorData = await response.json();
-        // Handle different status codes from the backend
-          if (response.status === 401) {
-            setError("Invalid credentials. Please try again.");
-          } else if (response.status === 400) {
-            setError(errorData.message || "Please provide an email and password.");
-          } else {
-            setError("Something went wrong. Please try again later.");
-          }
-      }
-    } catch (error) {
-      setError("An unexpected error occurred. Please try again.");
-      console.error(error);
-    } finally {
-      setIsSubmitting(false);
+      await login(email, password)
+      navigate("/dashboard") // redirect after login
+    } catch (err: any) {
+      setError(err.message || "Login failed. Please try again.")
     }
-  };
-
+  }
   return (
+    
     <div className="flex flex-col items-center justify-center min-h-screen bg-white  pb-[30px]">
       {/* Form Container */}
       <form
@@ -106,7 +71,7 @@ export const LogIn = () => {
         <div className="submit-container text-center mt-6">
           <AuthenticationButtons
             text="Sign In"
-            disabled={isSubmitting}
+            disabled={isLoading}
           />
         </div>
       </form>
@@ -118,5 +83,7 @@ export const LogIn = () => {
         </div>
       )}
     </div>
-  );
+  )
 };
+
+export default LogIn;
