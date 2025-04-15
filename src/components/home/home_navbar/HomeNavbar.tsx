@@ -44,13 +44,13 @@ const HomeNavbar: React.FC = () => {
       <div className="hidden md:flex space-x-3">
         <button
           onClick={() => navigate("/signup")}
-          className="bg-indigo-200 px-4 py-2 rounded-full"
+          className="bg-indigo-200 hover:bg-indigo-300 px-4 py-2 rounded-full"
         >
           sign up
         </button>
         <button
           onClick={() => navigate("/login")}
-          className="bg-green-200 px-4 py-2 rounded-full"
+          className="bg-green-200 hover:bg-green-300 px-4 py-2 rounded-full"
         >
           log in
         </button>
@@ -86,14 +86,20 @@ const HomeNavbar: React.FC = () => {
             services
           </a>
           <button
-            onClick={() => navigate("/signup")}
-            className="bg-indigo-200 px-4 py-2 rounded-full"
+            onClick={() => {
+              navigate("/signup");
+              setIsOpen(false);
+            }}
+            className="bg-indigo-200 hover:bg-indigo-300 px-4 py-2 rounded-full"
           >
             sign up
           </button>
           <button
-            onClick={() => navigate("/login")}
-            className="bg-green-200 px-4 py-2 rounded-full"
+            onClick={() => {
+              navigate("/login");
+              setIsOpen(false);
+            }}
+            className="bg-green-200 hover:bg-green-300 px-4 py-2 rounded-full"
           >
             log in
           </button>
