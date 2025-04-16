@@ -17,6 +17,7 @@ const Leaderboard: React.FC = () => {
     
     const url = import.meta.env.VITE_API_TOP_USERS_URL;
     const userProgressUrl = `https://ii-practicum-team-10-back.onrender.com/api/v1/user/${user?.userId}/progress`;
+    const backendServerUrl = import.meta.env.VITE_API_SERVER;
 
     const fetchUserProgress = async () => {
         try {
@@ -54,11 +55,13 @@ const Leaderboard: React.FC = () => {
             })
             const data = await response.json();
             const topUsers = data.map((topUser, index) => {
+                const userPfp = backendServerUrl + topUser.profilePicture;
                 return(
                     <RankedUser 
                         key={index} 
                         userName={topUser.name} 
-                        userCharacter={<img src="images/character_img.png" className="w-16" />} 
+                        // userCharacter={<img src="images/character_img.png" className="w-16" />} 
+                        userCharacter={<img src={`${userPfp}`} className="w-13" />} 
                         ranking={index + 1}
                     />
                 )
