@@ -4,7 +4,6 @@ const HeroSection: React.FC = () => {
 
   return (
     <div id="home" className="bg-white h-screen flex flex-col">
-      <HomeNavbar/>
       <div className="flex flex-1 items-center justify-center text-center px-6">
         <div className="w-full">
           <h1 className="text-5xl sm:text-7xl lg:text-9xl font-bold tracking-tight text-gray-900">

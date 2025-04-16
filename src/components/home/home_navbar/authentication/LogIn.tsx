@@ -1,20 +1,23 @@
-import { useState, FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, FormEvent } from "react";
+import useAuth from "../../../../hooks/useAuth";
+import { Navigate, useNavigate } from "react-router-dom";
 import { LogInForm } from "./LogInForm";
-
 interface FormErrors {
   email?: string;
   password?: string;
 }
 
 export const LogIn = () => {
+  const { user, login, isLoading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
-  const url = import.meta.env.VITE_API_LOGIN_URL;
+
+  if (user) {
+    return <Navigate to="/dashboard" />;
+  }
 
   const validate = (email: string, password: string): FormErrors => {
     const newErrors: FormErrors = {};
@@ -29,64 +32,32 @@ export const LogIn = () => {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    setIsSubmitting(true);
 
     const validationErrors = validate(email, password);
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length > 0) {
-      setIsSubmitting(false);
       return;
     }
 
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email.trim(),
-          password: password.trim(),
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-
-        if (response.status === 401) {
-          throw new Error("Invalid credentials. Please try again.");
-        } else if (response.status === 400) {
-          throw new Error(errorData.message || "Missing credentials.");
-        } else {
-          throw new Error("Something went wrong. Please try again later.");
-        }
-      }
-
-      const data = await response.json();
-      localStorage.setItem("authToken", data.token);
-
-      setEmail("");
-      setPassword("");
-      setErrors({});
-
-      navigate("/dashboard");
+      await login(email.trim(), password.trim());
+      navigate("/dashboard"); // redirect after login
     } catch (err: any) {
-      setErrors({ email: err.message || "Unexpected error occurred." });
-    } finally {
-      setIsSubmitting(false);
+      setErrors({ email: err.message || "Login failed. Please try again." });
     }
   };
-
   return (
     <LogInForm
       email={email}
       password={password}
       errors={errors}
-      isSubmitting={isSubmitting}
+      isSubmitting={isLoading}
       setEmail={setEmail}
       setPassword={setPassword}
       handleSubmit={handleSubmit}
     />
   );
 };
+
+export default LogIn;
