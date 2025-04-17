@@ -7,6 +7,7 @@ import Layout from "./pages/Layout";
 import Dashboard from "./pages/Dashboard";
 import Learn from "./pages/Learn";
 import Leaderboard from "./pages/Leaderboard";
+import Admin from "./pages/Admin";
 // import { NotFound } from "./components/";
 import ProtectedRoute from "./hoc/ProtectedRoute";
 
@@ -38,6 +39,14 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute requiredRole="user">
               <Leaderboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <Admin />
             </ProtectedRoute>
           }
         />

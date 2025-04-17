@@ -15,8 +15,10 @@ export const LogIn = () => {
 
   const navigate = useNavigate();
 
-  if (user) {
+  if (user?.role === "user") {
     return <Navigate to="/dashboard" />;
+  } else if (user?.role === "admin") {
+    return <Navigate to="/admin" />;
   }
 
   const validate = (email: string, password: string): FormErrors => {
@@ -41,8 +43,14 @@ export const LogIn = () => {
     }
 
     try {
-      await login(email.trim(), password.trim());
-      navigate("/dashboard"); // redirect after login
+      const loggedInUser = await login(email.trim(), password.trim());
+      console.log(loggedInUser);
+      if (loggedInUser.role === "user") {
+        navigate("/dashboard");
+      } else {
+        console.log("In here");
+        navigate("/admin");
+      }
     } catch (err: any) {
       setErrors({ email: err.message || "Login failed. Please try again." });
     }
