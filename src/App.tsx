@@ -4,7 +4,7 @@ import { Home } from "./pages/Home";
 import { LogIn } from "./components/home/home_navbar/authentication/LogIn";
 import { SignUp } from "./components/home/home_navbar/authentication/SignUp";
 import Layout from "./pages/Layout";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./components/user/dashboard/Dashboard";
 import Learn from "./pages/Learn";
 import Leaderboard from "./pages/Leaderboard";
 // import { NotFound } from "./components/";
