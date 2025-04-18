@@ -1,11 +1,10 @@
-import React from "react";
+
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import DynamicSubjectProgress from "../shared/DynamicSubjectProgress";
 import Character from "../shared/Character";
-import { useEffect, useState } from "react";
-import axios from "axios";
-
-
+import ExpBar from "../shared/ExpBar";
 
 interface User {
   name: string;
@@ -18,53 +17,68 @@ interface User {
 const Dashboard: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [overallProgress, setOverallProgress] = useState<number | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const savedToken = localStorage.getItem("token");
+    const savedUser = localStorage.getItem("user");
+
+    if (savedToken && savedUser) {
+      setToken(savedToken);
+      setUser(JSON.parse(savedUser));
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchOverallProgress = async () => {
+      if (!user || !token) return;
       try {
-        const response = await axios.post(
-          "https://ii-practicum-team-10-back.onrender.com/api/v1/auth/login",
+        const response = await axios.get(
+          `https://ii-practicum-team-10-back.onrender.com/api/v1/user/${user.userId}/progress`,
           {
-            email: "alex@gmail.com",
-            password: "secret",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
-
-        console.log("Fetched user data:", response.data.user);
-
-        setUser(response.data.user);
-        setToken(response.data.token);
+        setOverallProgress(Number(response.data.progress.overall));
       } catch (error) {
-        console.error("Failed to fetch user:", error);
+        console.error("Failed to fetch overall progress:", error);
       }
     };
 
-    fetchUser();
-  }, []);
+    fetchOverallProgress();
+  }, [user, token]);
 
   if (!user || !token) return <p>Loading Dashboard...</p>;
 
+  const imageUrl = `https://ii-practicum-team-10-back.onrender.com${user.profilePicture.replace("/public", "")}`;
+
   return (
-    <div className="grid grid-cols-2 justify-around min-h-screen bg-gray-100 p-8 gap-4">
-      <div className="flex flex-col justify-around">
-        <h1 className="text-3xl italic font-serif mb-4">
-          Welcome, {user.name}!
-        </h1>
+    <div className="grid grid-cols-1 md:grid-cols-2  mt-24 min-h-screen bg-gray-100 p-8 gap-4">
+      <div className="flex flex-col">
+        <h1 className="text-3xl italic font-serif mb-4">Welcome, {user.name}!</h1>
 
-<div className="flex justify-center mb-8">
-  <button
-    onClick={() => navigate("/learn")}
-    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-  >
-    Go to Learn
-  </button>
-</div>
+        <div>
+        <button
+            onClick={() => navigate("/learn")}
+            className="text-white bg-green-500 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+          >
+            Go to Learn
+          </button>
+        </div>
 
-    <Character src={user.profilePicture} alt="Profile" />
+        {overallProgress !== null && (
+          <div className="mb-6">            
+            <ExpBar label="Overall" value={overallProgress} />
+          </div>
+        )}
 
 
-        
+
+
+        <Character src={user.profilePicture} alt="Profile" />
       </div>
 
       <div className="flex flex-col justify-around">
@@ -76,8 +90,6 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
-
-
 
 
 
