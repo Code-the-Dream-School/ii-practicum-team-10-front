@@ -10,6 +10,8 @@ import ProtectedRoute from "./hoc/ProtectedRoute";
 import HtmlPractice from './components/user/learn/html_practice/HtmlPractice';
 import CssPractice from './components/user/learn/css_practice/CssPractice';
 import JavaScriptPractice from './components/user/learn/javascript_folder/JavascriptPractice';
+import ReactPractice from './components/user/learn/react_practice/ReactPractice'
+import NodeJsPractice from "./components/user/learn/nodejs_practice/NodejsPractice";
 
 const App: React.FC = () => {
 
@@ -59,6 +61,24 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute requiredRole="user">
               <JavaScriptPractice />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/learn/react"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <ReactPractice />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/learn/nodejs"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <NodeJsPractice />
             </ProtectedRoute>
           }
         />

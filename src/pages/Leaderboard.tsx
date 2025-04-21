@@ -15,6 +15,7 @@ const Leaderboard: React.FC = () => {
     const [nodeJsScore, setNodeJsScore] = useState<number>();
     const [reactScore, setReactScore] = useState<number>();
     const [overallScore, setOverallScore] = useState<number>();
+    const [isLoading, setIsLoading] = useState(true);
     
     const url = import.meta.env.VITE_API_TOP_USERS_URL;
     const userProgressUrl = `https://ii-practicum-team-10-back.onrender.com/api/v1/user/${user?.userId}/progress`;
@@ -75,12 +76,15 @@ const Leaderboard: React.FC = () => {
                 )
             })
             setRankedUsers(topUsers);
+            setIsLoading(false);
             console.log("SUCESSFUL DATA", data);
         } catch {
             throw console.error();
             
         }
     }
+
+    // useEffect()
     
     useEffect(() => {
         if (token) {
@@ -92,7 +96,7 @@ const Leaderboard: React.FC = () => {
     return (
         <div className="flex flex-col justify-center items-center min-h-screen md:flex-row">
             <UserCharacterSummary cssScore={cssScore} htmlScore={htmlScore} javaScriptScore={javaScriptScore} nodeJsScore={nodeJsScore} reactScore={reactScore} overallScore={overallScore}/>
-            <Ranking rankedUsers={rankedUsers}/>
+            {isLoading ? <div className='flex justify-center items-center w-90'><p className='font-semibold text-3xl'>Loading ...</p></div> : <Ranking rankedUsers={rankedUsers}/>}
         </div>
     
     )
