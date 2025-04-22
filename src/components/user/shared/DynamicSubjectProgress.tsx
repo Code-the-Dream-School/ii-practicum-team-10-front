@@ -10,13 +10,27 @@ interface Progress {
 interface DynamicSubjectProgressProps {
   userId: string;
   token: string;
+  hideOverall?: boolean;
 }
+
+// Mapping to colors
+const subjectColors: { [key: string]: string } = {
+  css: "bg-indigo-500",
+  html: "bg-red-400",
+  javascript: "bg-yellow-400",
+  react: "bg-sky-400",
+  nodejs: "bg-emerald-500",
+  default: "bg-gray-400",
+};
 
 const DynamicSubjectProgress: React.FC<DynamicSubjectProgressProps> = ({
   userId,
   token,
+  hideOverall,
 }) => {
-  const [progressData, setProgressData] = useState<Progress[]>([]);
+  const [subjectProgress, setSubjectProgress] = useState<Progress[]>([]);
+  const [overallProgress, setOverallProgress] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const fetchProgress = async () => {
     try {
@@ -29,20 +43,21 @@ const DynamicSubjectProgress: React.FC<DynamicSubjectProgressProps> = ({
         }
       );
 
-      console.log("Full progress response:", response.data);
-
       const rawProgress = response.data.progress;
 
-      const progressArray: Progress[] = Object.entries(rawProgress).map(
-        ([subject, progress]) => ({
+      const formattedProgress: Progress[] = Object.entries(rawProgress)
+        .filter(([subject]) => !(hideOverall && subject === "overall"))
+        .map(([subject, value]) => ({
           subject,
-          progress: Number(progress),
-        })
-      );
+          progress: Number(value),
+        }));
 
-      setProgressData(progressArray);
+      setSubjectProgress(formattedProgress);
+      setOverallProgress(Number(rawProgress.overall));
     } catch (error) {
       console.error("Failed to fetch progress:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -52,16 +67,34 @@ const DynamicSubjectProgress: React.FC<DynamicSubjectProgressProps> = ({
     }
   }, [userId, token]);
 
+  if (loading) return <p>Loading progress...</p>;
+
+  const hasProgress =
+    (overallProgress !== null && overallProgress > 0) ||
+    subjectProgress.some((subject) => subject.progress > 0);
+
   return (
-    <div className="space-y-4">
-      {progressData.map((item) => (
-        <ExpBar key={item.subject} label={item.subject} value={item.progress} />
-      ))}
+    <div>
+      {!hasProgress ? (
+        <p className="text-green-500 text-2xl italic">
+          You haven’t started learning yet.
+        </p>
+      ) : (
+        subjectProgress
+          .filter((subject) => subject.subject.toLowerCase() !== "overall")
+          .map((subject) => (
+            <div id={subject.subject} key={subject.subject} className="mb-4">
+              <ExpBar
+                label={subject.subject}
+                value={subject.progress}
+                color={subjectColors[subject.subject.toLowerCase()] || subjectColors.default}
+              />
+            </div>
+          ))
+      )}
     </div>
   );
 };
 
 export default DynamicSubjectProgress;
-
-
 
