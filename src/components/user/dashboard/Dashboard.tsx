@@ -81,7 +81,7 @@ const Dashboard: React.FC = () => {
         <Character src={user.profilePicture} alt="Profile" />
       </div>
 
-      <div className="flex flex-col justify-around">
+      <div className="flex flex-col">
         <h2 className="text-2xl font-semibold mb-4">Your Progress</h2>
         <DynamicSubjectProgress userId={user.userId} token={token} />
       </div>
