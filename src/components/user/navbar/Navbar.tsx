@@ -15,7 +15,7 @@ function Navbar() {
   };
 
   return (
-    <nav className="flex items-center justify-between fixed left-0 top-0 w-full bg-white  z-50 p-4 md:px-10">
+    <nav className="flex items-center justify-between fixed left-0 top-0 w-full bg-white z-50 p-4 md:px-10">
       <div className="flex justify-between items-center gap-x-4">
         <img src={character} alt="Logo" className="w-10 h-10 object-cover" />
         <button

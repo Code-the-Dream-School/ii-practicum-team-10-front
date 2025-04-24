@@ -1,5 +1,5 @@
 import React from "react";
-import classNames from "classnames";
+// import classNames from "classnames";
 
 interface ExpBarProps {
   label: string;
@@ -29,7 +29,7 @@ const ExpBar: React.FC<ExpBarProps> = ({ label, value, color }) => {
       {/* Progress bar */}
       <div className="w-full bg-gray-200 rounded h-4 overflow-hidden">
         <div
-          className={classNames(barColor, "h-4 rounded transition-all duration-700")}
+          className={"h-4 rounded transition-all duration-700"}
           style={{ width: `${value}%` }}
         />
       </div>

@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-// import { Navbar } from "./components/user/navbar/Navbar";
 import { Home } from "./pages/Home";
 import { LogIn } from "./components/home/home_navbar/authentication/LogIn";
 import { SignUp } from "./components/home/home_navbar/authentication/SignUp";
@@ -7,10 +6,15 @@ import Layout from "./pages/Layout";
 import Dashboard from "./components/user/dashboard/Dashboard";
 import Learn from "./pages/Learn";
 import Leaderboard from "./pages/Leaderboard";
-// import { NotFound } from "./components/";
 import ProtectedRoute from "./hoc/ProtectedRoute";
+import HtmlPractice from './components/user/learn/html_practice/HtmlPractice';
+import CssPractice from './components/user/learn/css_practice/CssPractice';
+import JavaScriptPractice from './components/user/learn/javascript_folder/JavascriptPractice';
+import ReactPractice from './components/user/learn/react_practice/ReactPractice'
+import NodeJsPractice from "./components/user/learn/nodejs_practice/NodejsPractice";
 
 const App: React.FC = () => {
+
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
@@ -32,7 +36,53 @@ const App: React.FC = () => {
               <Learn />
             </ProtectedRoute>
           }
+        />  
+        
+        <Route
+          path="/learn/html"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <HtmlPractice />
+            </ProtectedRoute>
+          }
         />
+
+        <Route
+          path="/learn/css"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <CssPractice />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/learn/javascript"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <JavaScriptPractice />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/learn/react"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <ReactPractice />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/learn/nodejs"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <NodeJsPractice />
+            </ProtectedRoute>
+          }
+        />
+        
         <Route
           path="/leaderboard"
           element={
