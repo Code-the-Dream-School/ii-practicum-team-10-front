@@ -1,55 +1,21 @@
-import React, { useEffect, useState } from "react";
+// src/components/Character.tsx
+// Character.tsx
 
-interface User {
-  name: string;
-  email: string;
-  role: string;
-  profilePicture: string;
-}
-
-const Character: React.FC = () => {
-  const [profilePicture, setProfilePicture] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchProfilePicture = async () => {
-      try {
-        const response = await fetch("https://ii-practicum-team-10-back.onrender.com/api/v1/auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            email: "alex@gmail.com",
-            password: "secret"
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        // console.log(data);
-        setProfilePicture(data.user.profilePicture);
-      } catch (error) {
-        console.error("Image loading error:", error);
-      }
-    };
-
-    fetchProfilePicture();
-  }, []);
-
-  if (!profilePicture) return <p>Loading image...</p>;
-
-  return (
-    <div className="flex justify-center mt-4">
-      <img
-        src={profilePicture}
-        alt="Profile"
-        className="w-24 h-24 object-cover"
-      />
-    </div>
-  );
-};
-
-export default Character;
+interface CharacterProps {
+    src: string; // только путь вроде "/public/4.png"
+    alt: string;
+  }
+  
+  const Character: React.FC<CharacterProps> = ({ src, alt }) => {
+    const imageUrl = `https://ii-practicum-team-10-back.onrender.com${src.replace("/public", "")}`;
+  
+    return (
+      <div className="w-64 h-104 overflow-hidden border-2 border-gray-300">
+        <img src={imageUrl} alt={alt} className="object-cover w-full h-full" />
+      </div>
+    );
+  };
+  
+  export default Character;
+  
+  
