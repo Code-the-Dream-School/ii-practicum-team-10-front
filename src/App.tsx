@@ -8,6 +8,9 @@ import Dashboard from "./pages/Dashboard";
 import Learn from "./pages/Learn";
 import Leaderboard from "./pages/Leaderboard";
 import Admin from "./pages/Admin";
+import AdminQuestionsPage from "./components/admin/AdminQuestionsPage";
+import AdminAddQuestions from "./components/admin/AdminAddQuestion";
+import AdminEditQuestions from "./components/admin/AdminEditQuestion";
 // import { NotFound } from "./components/";
 import ProtectedRoute from "./hoc/ProtectedRoute";
 
@@ -47,6 +50,30 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute requiredRole="admin">
               <Admin />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin-questions/:topic"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminQuestionsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin-add-question"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminAddQuestions />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/questions/:id/edit"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminEditQuestions />
             </ProtectedRoute>
           }
         />
