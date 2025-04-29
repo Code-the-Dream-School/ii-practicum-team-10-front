@@ -19,6 +19,10 @@ interface AuthContextType {
     verifyPassword: string
   ) => Promise<void>;
   logout: () => void;
+  selectedClass: string;
+  setSelectedClass: (className: string) => void;
+  selectedClassChallenge: string;
+  setSelectedClassChallenge: (className: string) => void;
 }
 
 interface AuthProviderProps {
@@ -33,6 +37,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
+  const [selectedClass, setSelectedClass] = useState<string>("");
+  const [selectedClassChallenge, setSelectedClassChallenge] = useState<string>("");
+
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
@@ -79,7 +86,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, login, register, logout, isLoading, selectedClass, setSelectedClass, selectedClassChallenge, setSelectedClassChallenge }}>
       {children}
     </AuthContext.Provider>
   );

@@ -22,6 +22,9 @@ const Leaderboard: React.FC = () => {
     const backendServerUrl = import.meta.env.VITE_API_SERVER;
 
     const fetchUserProgress = async () => {
+
+        // console.log("CLASS", selectedClass);
+        // console.log("CHALLENGE", selectedClassChallenge);
         try {
             const response = await fetch(userProgressUrl, {
                 method: "GET",
@@ -32,7 +35,7 @@ const Leaderboard: React.FC = () => {
             })
 
             const data = await response.json();
-            console.log("USER PROGRESS", data)
+            // console.log("USER PROGRESS", data)
 
             setCssScore(data.progress.css);
             setHtmlScore(data.progress.html);
@@ -77,7 +80,7 @@ const Leaderboard: React.FC = () => {
             })
             setRankedUsers(topUsers);
             setIsLoading(false);
-            console.log("SUCESSFUL DATA", data);
+            // console.log("SUCESSFUL DATA", data);
         } catch {
             throw console.error();
             

@@ -10,16 +10,7 @@ const Learn = () => {
       </div>
       <div className="flex flex-col justify-center items-center lg:flex-row">
         <Card colorClass='bg-orange-400' title='React' route='/learn/react'>A powerful JavaScript library for building interactive user interfaces. It lets you create reusable components and efficiently update the page when data changes.</Card>
-        <Card colorClass='bg-green-400' title='Node.js' route='/learn/nodejs'>A runtime environment that lets you run JavaScript on the server. It’s fast, scalable, and great for building backend services like APIs and real-time apps.
-
-
-
-
-
-
-
-
-</Card>
+        <Card colorClass='bg-green-400' title='Node.js' route='/learn/nodejs'>A runtime environment that lets you run JavaScript on the server. It’s fast, scalable, and great for building backend services like APIs and real-time apps.</Card>
       </div>
     </div>
   );
