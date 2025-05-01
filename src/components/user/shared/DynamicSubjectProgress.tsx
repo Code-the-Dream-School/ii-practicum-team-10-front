@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ExpBar from "./ExpBar";
+import { getSubjectColor } from "../../../utils/getSubjectColor";
 
 interface Progress {
   subject: string;
@@ -13,15 +14,6 @@ interface DynamicSubjectProgressProps {
   hideOverall?: boolean;
 }
 
-// Mapping to colors
-const subjectColors: { [key: string]: string } = {
-  css: "bg-indigo-500",
-  html: "bg-red-400",
-  javascript: "bg-yellow-400",
-  react: "bg-sky-400",
-  nodejs: "bg-emerald-500",
-  default: "bg-gray-400",
-};
 
 const DynamicSubjectProgress: React.FC<DynamicSubjectProgressProps> = ({
   userId,
@@ -87,7 +79,7 @@ const DynamicSubjectProgress: React.FC<DynamicSubjectProgressProps> = ({
               <ExpBar
                 label={subject.subject}
                 value={subject.progress}
-                color={subjectColors[subject.subject.toLowerCase()] || subjectColors.default}
+                color={getSubjectColor(subject.subject)}
               />
             </div>
           ))
