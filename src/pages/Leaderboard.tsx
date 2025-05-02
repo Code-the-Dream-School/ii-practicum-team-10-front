@@ -6,7 +6,7 @@ import UserCharacterSummary from '../components/user/leaderboard/UserCharacterSu
 import useAuth from "../hooks/useAuth"
 
 const Leaderboard: React.FC = () => {
-    const { user } = useAuth();
+    const { user, selectedClass, selectedClassChallenge } = useAuth();
     const token = localStorage.getItem("token");
     const [rankedUsers, setRankedUsers] = useState<React.ReactElement[]>([]);
     const [cssScore, setCssScore] = useState<number>();
@@ -18,13 +18,14 @@ const Leaderboard: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     
     const url = import.meta.env.VITE_API_TOP_USERS_URL;
-    const userProgressUrl = `https://ii-practicum-team-10-back.onrender.com/api/v1/user/${user?.userId}/progress`;
+    const userProgressUrlBase = import.meta.env.VITE_API_USER_PROGRESS_URL;
+    const userProgressUrl = `${userProgressUrlBase}${user?.userId}/progress`;
     const backendServerUrl = import.meta.env.VITE_API_SERVER;
 
     const fetchUserProgress = async () => {
 
-        // console.log("CLASS", selectedClass);
-        // console.log("CHALLENGE", selectedClassChallenge);
+        console.log("CLASS", selectedClass);
+        console.log("CHALLENGE", selectedClassChallenge);
         try {
             const response = await fetch(userProgressUrl, {
                 method: "GET",

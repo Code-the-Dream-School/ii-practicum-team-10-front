@@ -12,6 +12,7 @@ import CssPractice from './components/user/learn/css_practice/CssPractice';
 import JavaScriptPractice from './components/user/learn/javascript_folder/JavascriptPractice';
 import ReactPractice from './components/user/learn/react_practice/ReactPractice'
 import NodeJsPractice from "./components/user/learn/nodejs_practice/NodejsPractice";
+import JavaScriptCodingChallenge from "./components/user/learn/javascript_folder/JavascriptCodingChallenge";
 
 const App: React.FC = () => {
 
@@ -61,6 +62,15 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute requiredRole="user">
               <JavaScriptPractice />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/learn/javascript/coding-challenge"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <JavaScriptCodingChallenge />
             </ProtectedRoute>
           }
         />
