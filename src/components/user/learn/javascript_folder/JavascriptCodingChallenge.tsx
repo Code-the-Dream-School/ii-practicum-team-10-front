@@ -19,6 +19,8 @@ const JavaScriptCodingChallenge = () => {
     const [result, setResult] = useState<any[] | null>(null);
     const [passedAllTests, setPassedAllTests] = useState<boolean>(false);
     const [showPopup, setShowPopup] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isRunBtnClicked, setIsRunBtnClicked] = useState(false);
 
     const baseUrl = import.meta.env.VITE_API_JS_CODING_CHALLENGE_URL;
     const jsCodingChallengeUrl = `${baseUrl}JavaScript/codingChallenge`
@@ -40,11 +42,11 @@ const JavaScriptCodingChallenge = () => {
             // console.log("QuestionTESTS", data[0].tests);
             // console.log("Questions QUANTITY", data.length)
 
-            const questionText = data[2].questionText;
+            const questionText = data[3].questionText;
 
             setQuestion(questionText);
-            setQuestionId(data[2].id);
-            setQuestionTests(data[2].tests);
+            setQuestionId(data[3].id);
+            setQuestionTests(data[3].tests);
 
             const match = questionText.match(/`(\w+)`/);
             const functionName = match ? match[1] : null;
@@ -60,7 +62,7 @@ const JavaScriptCodingChallenge = () => {
     const submitJsCodingChallenge = async () => {
         if (!passedAllTests) {
             setShowPopup(true);
-            return; // Exit early
+            return;
         }
 
         try {
@@ -78,6 +80,7 @@ const JavaScriptCodingChallenge = () => {
             const data = await response.json();
 
             console.log("SUBMITTED DATA: ", data);
+            window.location.reload();
         } catch(error) {
             throw console.error();
         }
@@ -99,6 +102,9 @@ const JavaScriptCodingChallenge = () => {
 
     {/* Runs user's code on all tests */}
     const runTests = async () => {
+        setIsLoading(false);
+        setIsRunBtnClicked(true);
+
         const sourceCode = editorRef.current?.getValue();
         if (!sourceCode) return;
       
@@ -162,6 +168,7 @@ const JavaScriptCodingChallenge = () => {
       
         setResult(testResults);
         setPassedAllTests(testResults.every(test => test.passed));
+        setIsLoading(true);
       };
       
     return (
@@ -181,12 +188,12 @@ const JavaScriptCodingChallenge = () => {
             />
 
             {showPopup && (
-                <div className="fixed top-0 left-0 w-full h-full bg-opacity-50 flex justify-center items-center z-50">
+                <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center z-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg max-w-md text-center">
                     <p className="text-lg font-semibold mb-4">Please pass all the tests before submitting.</p>
                     <button
                         onClick={() => setShowPopup(false)}
-                        className="bg-green-500 text-white px-4 py-2 cursor-pointer rounded hover:bg-green-400"
+                        className="bg-green-500 text-white px-4 py-2 cursor-pointer rounded-xl hover:bg-green-400"
                     >
                         OK
                     </button>
@@ -194,28 +201,37 @@ const JavaScriptCodingChallenge = () => {
                 </div>
             )}
 
-            {Array.isArray(result) &&  
-            <div className="flex flex-col justify-center items-center mt-4 bg-gray-100 w-[850px] text-black text-[20px] p-4 rounded">
-                {result.map((res, i) => (
-                    <div
-                        key={res.id}
-                        className={`whitespace-pre-wrap ${res.passed ? "text-green-600" : "text-red-600"}`}
-                    >
-                        {res.passed
-                        ? `Test ${i + 1} passed`
-                        : `Test ${i + 1} failed | Output: ${res.output} | Expected Output: ${res.expectedOutput}`}
+            {isRunBtnClicked ? 
+                isLoading ? 
+                    Array.isArray(result) &&  
+                    <div className="flex flex-col justify-center items-center mt-4 bg-gray-100 w-[850px] text-black text-[20px] p-4 rounded">
+                        {result.map((res, i) => (
+                            <div
+                                key={res.id}
+                                className={`whitespace-pre-wrap ${res.passed ? "text-green-600" : "text-red-600"}`}
+                            >
+                                {res.passed
+                                ? `Test ${i + 1} passed`
+                                : `Test ${i + 1} failed | Output: ${res.output} | Expected Output: ${res.expectedOutput}`}
+                            </div>
+                            ))
+                        }
                     </div>
-                    ))
-                }
-            </div>
-}
+                        
+                : 
+                    <div className="flex flex-col justify-center items-center mt-4 bg-gray-100 w-[850px] text-black text-[20px] p-4 rounded"><p className="whitespace-pre-wrap ">Loading ...</p></div>
+
+            : 
+            
+                <div></div>
+
+            }
 
             <div className="w-[850px] mt-4 flex justify-end items-end gap-3">
                 <button onClick={runTests} className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-400 hover:cursor-pointer"> Run Tests </button>
                 <button onClick={submitJsCodingChallenge} className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-400 hover:cursor-pointer">Submit</button>
             </div>
         </div>
-
     )
 }
 
