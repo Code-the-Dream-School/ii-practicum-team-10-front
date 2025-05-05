@@ -8,17 +8,19 @@ type UserCharacterSummaryProps = {
     nodeJsScore: number | undefined,
     reactScore: number | undefined,
     overallScore: number | undefined,
-    pfp: string | undefined
+    pfp: string | undefined,
+    isLoading: boolean
 }
 
-function UserCharacterSummary ({pfp, cssScore, htmlScore, javaScriptScore, nodeJsScore, reactScore, overallScore}: UserCharacterSummaryProps): JSX.Element {
+function UserCharacterSummary ({ isLoading, pfp, cssScore, htmlScore, javaScriptScore, nodeJsScore, reactScore, overallScore}: UserCharacterSummaryProps): JSX.Element {
     const { user } = useAuth()
     
     return (
         <div className="bg-red-400 w-90 h-129 m-1 rounded-3xl">
             <div className="scale-90 flex flex-col justify-center items-center bg-red-400 w-90 h-129 m-1 rounded-3xl">
                 <h2 className="font-semibold text-xl">{user?.name}</h2>
-                <div className="inline-block origin-top overflow-hidden"><Character src={pfp} alt="Profile"/></div>
+                {isLoading ? <div className="inline-block origin-top overflow-hidden p-30 font-medium text-lg">Loading ...</div> : 
+                <div className="inline-block origin-top overflow-hidden"><Character src={pfp} alt="Profile"/></div> }
                 <div className="flex">
                     <div className="m-2">
                         <div className="text-lg"><span className="font-bold">HTML Score:</span> {htmlScore}</div>

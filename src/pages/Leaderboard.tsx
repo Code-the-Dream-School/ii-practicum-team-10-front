@@ -95,7 +95,7 @@ const Leaderboard: React.FC = () => {
 
     return (
         <div className="flex flex-col justify-center items-center min-h-screen md:flex-row">
-            <UserCharacterSummary pfp={pfp} cssScore={cssScore} htmlScore={htmlScore} javaScriptScore={javaScriptScore} nodeJsScore={nodeJsScore} reactScore={reactScore} overallScore={overallScore}/>
+            <UserCharacterSummary isLoading={isLoading} pfp={pfp} cssScore={cssScore} htmlScore={htmlScore} javaScriptScore={javaScriptScore} nodeJsScore={nodeJsScore} reactScore={reactScore} overallScore={overallScore}/>
             {isLoading ? <div className='flex justify-center items-center w-90'><p className='font-semibold text-3xl'>Loading ...</p></div> : <Ranking rankedUsers={rankedUsers}/>}
         </div>
     
