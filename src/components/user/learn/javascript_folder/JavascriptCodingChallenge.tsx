@@ -20,11 +20,64 @@ const JavaScriptCodingChallenge = () => {
     const [passedAllTests, setPassedAllTests] = useState<boolean>(false);
     const [showPopup, setShowPopup] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isQuestionLoading, setIsQuestionLoading] = useState(true);
     const [isRunBtnClicked, setIsRunBtnClicked] = useState(false);
+    const [javaScriptScore, setJavaScriptScore] = useState<number>(0);
+    const [numberOfQuestions, setNumberOfQuestions] = useState<number>(0);
+    const [isQuestionSubmitting, setIsQuestionSubmitting] = useState(false);
 
     const baseUrl = import.meta.env.VITE_API_JS_CODING_CHALLENGE_URL;
     const jsCodingChallengeUrl = `${baseUrl}JavaScript/codingChallenge`
     const submitJsCodingChallengeUrl = `${baseUrl}JavaScript/codingChallenge/submit`
+
+    const userProgressUrlBase = import.meta.env.VITE_API_USER_PROGRESS_URL;
+    const userProgressUrl = `${userProgressUrlBase}${user?.userId}/progress`;
+
+    const fetchUserProgress = async () => {
+        try {
+            const response = await fetch(userProgressUrl, {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${token}`
+                }
+            })
+
+            const data = await response.json();
+            setJavaScriptScore(data.progress.javaScript);
+        } catch {
+            throw console.error();
+            
+        }
+    }
+
+    const updateProgress = async (progressValue: number) => {
+        try {
+          const response = await fetch(userProgressUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                "progress": {
+                    "javaScript": progressValue
+                    },
+            }),
+          });
+      
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          
+          const data = await response.json();
+          console.log("Progress updated:", data);
+          window.location.reload();
+      
+        } catch (error) {
+          console.error("Failed to update progress:", error);
+        }
+      };      
 
     {/* Fetches coding challenge */}
     const fetchJsCodingChallenge = async () => {
@@ -41,17 +94,24 @@ const JavaScriptCodingChallenge = () => {
             // console.log("QuestionID", data[0].id);
             // console.log("QuestionTESTS", data[0].tests);
             // console.log("Questions QUANTITY", data.length)
+            console.log("Number of Questions: ", data.length);
 
-            const questionText = data[3].questionText;
-
-            setQuestion(questionText);
-            setQuestionId(data[3].id);
-            setQuestionTests(data[3].tests);
-
-            const match = questionText.match(/`(\w+)`/);
-            const functionName = match ? match[1] : null;
-
-            setFunctionName(functionName);
+            if (data.length > 0) {
+                const questionText = data[0].questionText;
+                setQuestion(questionText);
+                setQuestionId(data[0].id);
+                setQuestionTests(data[0].tests);
+    
+                const match = questionText.match(/`(\w+)`/);
+                const functionName = match ? match[1] : null;
+    
+                setFunctionName(functionName);
+                setIsQuestionLoading(false);
+                setNumberOfQuestions(data.length);
+            } else {
+                setIsQuestionLoading(false);
+                setNumberOfQuestions(data.length);
+            }
 
         } catch(error) {
             throw console.error();
@@ -64,7 +124,7 @@ const JavaScriptCodingChallenge = () => {
             setShowPopup(true);
             return;
         }
-
+        setIsQuestionSubmitting(true);
         try {
             const response = await fetch(submitJsCodingChallengeUrl, {
                 method: "Post",
@@ -79,8 +139,11 @@ const JavaScriptCodingChallenge = () => {
 
             const data = await response.json();
 
+            console.log("USER PROGRESS", javaScriptScore)
+            updateProgress(javaScriptScore + 10);
+
             console.log("SUBMITTED DATA: ", data);
-            window.location.reload();
+            setIsQuestionSubmitting(false);
         } catch(error) {
             throw console.error();
         }
@@ -89,6 +152,7 @@ const JavaScriptCodingChallenge = () => {
     {/* Fetches coding challenge problem on load */}
     useEffect(() => {
         fetchJsCodingChallenge();
+        fetchUserProgress();
     }, [])
 
     {/* Places the cursor inside the editor on load */}
@@ -99,6 +163,28 @@ const JavaScriptCodingChallenge = () => {
 
     {/* Returns a set Time Out promise */}
     const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+    function normalizeValue(value: any): any {
+        if (typeof value === "string") {
+          try {
+            // Attempt to parse if it's JSON-like
+            const parsed = JSON.parse(value);
+            return parsed;
+          } catch {
+            // It's a plain string, return as-is (trimmed)
+            return value.trim();
+          }
+        }
+      
+        return value;
+      }
+      
+    function isOutputEqual(output: any, expectedOutput: any): boolean {
+        const normalizedOutput = normalizeValue(output);
+        const normalizedExpected = normalizeValue(expectedOutput);
+        
+        return JSON.stringify(normalizedOutput) === JSON.stringify(normalizedExpected);
+    }
 
     {/* Runs user's code on all tests */}
     const runTests = async () => {
@@ -140,11 +226,15 @@ const JavaScriptCodingChallenge = () => {
             });
       
             const data = await response.json();
-            console.log("DATA", data)
+            // console.log("DATA", data)
             const output = data.run.stdout.trim();
             console.log("OUTPUT", output)
-            const expectedOutput = String(test.expectedOutput);
-            const passed = output === String(test.expectedOutput);
+            console.log("OUTPUT TYPE", typeof(output))
+            const expectedOutput = test.expectedOutput;
+            console.log("EXPECTED OUTPUT", output)
+            console.log("EXPECTED OUTPUT TYPE", typeof(output))
+            const passed = isOutputEqual(output, expectedOutput);
+            console.log("PASSED?", passed)
       
             testResults.push({
               passed,
@@ -172,66 +262,81 @@ const JavaScriptCodingChallenge = () => {
       };
       
     return (
-        <div className="flex flex-col justify-center items-center w-full max-w-4xl mx-auto p-4 pt-30">
-            <h2 className="text-xl font-bold w-[850px] mb-4">
-                {question}
-            </h2>
+        <>
+        {isQuestionLoading ? 
+            <div className="w-full h-screen text-[30px] flex justify-center items-center"><p>Question loading ...</p></div>
+        :
+            numberOfQuestions ?
+                isQuestionSubmitting ? 
+                    <div className="w-full h-screen text-[30px] flex justify-center items-center"><p>Question submitting ...</p></div> 
+                :
+                    <div className="flex flex-col justify-center items-center w-full max-w-4xl mx-auto p-4 pt-30">
+                        <div className="w-[850px] h-[100px]">
+                            <ExpBar label="JavaScript" value={javaScriptScore}/>
+                        </div>
+                        <h2 className="text-xl font-bold w-[850px] mb-4">
+                            {question}
+                        </h2>
 
-            <Editor
-                height="400px"
-                width="850px"
-                defaultLanguage="javascript"
-                value={userCode}
-                onChange={(value) => setUserCode(value || "")}
-                onMount={onMount}
-                theme="vs-dark"
-            />
+                        <Editor
+                            height="400px"
+                            width="850px"
+                            defaultLanguage="javascript"
+                            value={userCode}
+                            onChange={(value) => setUserCode(value || "")}
+                            onMount={onMount}
+                            theme="vs-dark"
+                        />
 
-            {showPopup && (
-                <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md text-center">
-                    <p className="text-lg font-semibold mb-4">Please pass all the tests before submitting.</p>
-                    <button
-                        onClick={() => setShowPopup(false)}
-                        className="bg-green-500 text-white px-4 py-2 cursor-pointer rounded-xl hover:bg-green-400"
-                    >
-                        OK
-                    </button>
-                    </div>
-                </div>
-            )}
-
-            {isRunBtnClicked ? 
-                isLoading ? 
-                    Array.isArray(result) &&  
-                    <div className="flex flex-col justify-center items-center mt-4 bg-gray-100 w-[850px] text-black text-[20px] p-4 rounded">
-                        {result.map((res, i) => (
-                            <div
-                                key={res.id}
-                                className={`whitespace-pre-wrap ${res.passed ? "text-green-600" : "text-red-600"}`}
-                            >
-                                {res.passed
-                                ? `Test ${i + 1} passed`
-                                : `Test ${i + 1} failed | Output: ${res.output} | Expected Output: ${res.expectedOutput}`}
+                        {showPopup && (
+                            <div className="fixed top-15 left-0 w-full h-full flex justify-center items-center z-50">
+                                <div className="bg-white p-6 rounded-lg shadow-lg max-w-md text-center">
+                                <p className="text-lg font-semibold mb-4">Please pass all the test cases before submitting.</p>
+                                <button
+                                    onClick={() => setShowPopup(false)}
+                                    className="bg-green-500 text-white px-4 py-2 cursor-pointer rounded-xl hover:bg-green-400"
+                                >
+                                    OK
+                                </button>
+                                </div>
                             </div>
-                            ))
-                        }
-                    </div>
+                        )}
+
+                        {isRunBtnClicked ? 
+                            isLoading ? 
+                                Array.isArray(result) &&  
+                                <div className="flex flex-col justify-center items-center mt-4 bg-gray-100 w-[850px] text-black text-[20px] p-4 rounded">
+                                    {result.map((res, i) => (
+                                        <div
+                                            key={res.id}
+                                            className={`whitespace-pre-wrap ${res.passed ? "text-green-600" : "text-red-600"}`}
+                                        >
+                                            {res.passed
+                                            ? `Test ${i + 1} passed`
+                                            : `Test ${i + 1} failed | Output: ${res.output} | Expected Output: ${res.expectedOutput}`}
+                                        </div>
+                                        ))
+                                    }
+                                </div>
+                                    
+                            : 
+                                <div className="flex flex-col justify-center items-center mt-4 bg-gray-100 w-[850px] text-black text-[20px] p-4 rounded"><p className="whitespace-pre-wrap ">Loading ...</p></div>
+
+                        : 
                         
-                : 
-                    <div className="flex flex-col justify-center items-center mt-4 bg-gray-100 w-[850px] text-black text-[20px] p-4 rounded"><p className="whitespace-pre-wrap ">Loading ...</p></div>
+                            <div></div>
 
-            : 
-            
-                <div></div>
+                        }
 
-            }
-
-            <div className="w-[850px] mt-4 flex justify-end items-end gap-3">
-                <button onClick={runTests} className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-400 hover:cursor-pointer"> Run Tests </button>
-                <button onClick={submitJsCodingChallenge} className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-400 hover:cursor-pointer">Submit</button>
-            </div>
-        </div>
+                        <div className="w-[850px] mt-4 flex justify-end items-end gap-3">
+                            <button onClick={runTests} className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-400 hover:cursor-pointer"> Run Tests </button>
+                            <button onClick={submitJsCodingChallenge} className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-400 hover:cursor-pointer">Submit</button>
+                        </div>
+                    </div>
+            :
+                <div className="w-full h-screen text-[30px] flex justify-center items-center"><p>No more questions!</p></div>
+        }
+        </>
     )
 }
 

@@ -6,7 +6,7 @@ import UserCharacterSummary from '../components/user/leaderboard/UserCharacterSu
 import useAuth from "../hooks/useAuth"
 
 const Leaderboard: React.FC = () => {
-    const { user, selectedClass, selectedClassChallenge } = useAuth();
+    const { user } = useAuth();
     const token = localStorage.getItem("token");
     const [rankedUsers, setRankedUsers] = useState<React.ReactElement[]>([]);
     const [cssScore, setCssScore] = useState<number>();
@@ -22,10 +22,9 @@ const Leaderboard: React.FC = () => {
     const userProgressUrl = `${userProgressUrlBase}${user?.userId}/progress`;
     const backendServerUrl = import.meta.env.VITE_API_SERVER;
 
-    const fetchUserProgress = async () => {
+    const pfp = user?.profilePicture;
 
-        console.log("CLASS", selectedClass);
-        console.log("CHALLENGE", selectedClassChallenge);
+    const fetchUserProgress = async () => {
         try {
             const response = await fetch(userProgressUrl, {
                 method: "GET",
@@ -81,14 +80,11 @@ const Leaderboard: React.FC = () => {
             })
             setRankedUsers(topUsers);
             setIsLoading(false);
-            // console.log("SUCESSFUL DATA", data);
         } catch {
             throw console.error();
             
         }
     }
-
-    // useEffect()
     
     useEffect(() => {
         if (token) {
@@ -99,7 +95,7 @@ const Leaderboard: React.FC = () => {
 
     return (
         <div className="flex flex-col justify-center items-center min-h-screen md:flex-row">
-            <UserCharacterSummary cssScore={cssScore} htmlScore={htmlScore} javaScriptScore={javaScriptScore} nodeJsScore={nodeJsScore} reactScore={reactScore} overallScore={overallScore}/>
+            <UserCharacterSummary pfp={pfp} cssScore={cssScore} htmlScore={htmlScore} javaScriptScore={javaScriptScore} nodeJsScore={nodeJsScore} reactScore={reactScore} overallScore={overallScore}/>
             {isLoading ? <div className='flex justify-center items-center w-90'><p className='font-semibold text-3xl'>Loading ...</p></div> : <Ranking rankedUsers={rankedUsers}/>}
         </div>
     

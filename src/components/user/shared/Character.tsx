@@ -10,7 +10,7 @@ interface CharacterProps {
     const imageUrl = `https://ii-practicum-team-10-back.onrender.com${src.replace("/public", "")}`;
   
     return (
-      <div className="w-64 h-104 overflow-hidden border-2 border-gray-300">
+      <div className="w-64 h-104 overflow-hidden">
         <img src={imageUrl} alt={alt} className="object-cover w-full h-full" />
       </div>
     );
