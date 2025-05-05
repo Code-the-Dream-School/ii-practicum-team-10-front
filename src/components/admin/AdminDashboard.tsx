@@ -12,7 +12,7 @@ const AdminDashboard = () => {
 
   const navigate = useNavigate();
   return (
-    <div className="bg-white min-h-screen flex flex-col pt-24">
+    <div className="bg-white min-h-screen flex flex-col pt-96 md:pt-24">
       <div className="flex-1 flex flex-col items-center justify-center p-6">
         <div className="flex flex-wrap justify-center gap-6 w-full max-w-5xl">
           {sections.map(({ title, color }) => (

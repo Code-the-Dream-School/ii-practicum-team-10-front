@@ -18,7 +18,6 @@ type QuestionForm = {
 
 const AdminAddQuestions = () => {
   const navigate = useNavigate();
-  const url = import.meta.env.VITE_API_QUESTIONS;
 
   const [form, setForm] = useState<QuestionForm>({
     topic: "",
@@ -74,14 +73,26 @@ const AdminAddQuestions = () => {
     setSuccessMsg("");
 
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(form),
-      });
+      const preparedForm = { ...form };
+
+      if (form.type === "codingChallenge") {
+        preparedForm.tests = form.tests.map((test) => ({
+          input: JSON.parse(test.input), // Convert string to array
+          expectedOutput: test.expectedOutput,
+        }));
+      }
+
+      const response = await fetch(
+        "https://ii-practicum-team-10-back.onrender.com/api/v1/training/questions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(preparedForm),
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to submit question");
 
@@ -131,7 +142,7 @@ const AdminAddQuestions = () => {
             >
               <option value="flashcard">Flashcard</option>
               <option value="quiz">Quiz</option>
-              <option value="code">Code Challenge</option>
+              <option value="codingChallenge">Code Challenge</option>
             </select>
           </div>
 
@@ -218,7 +229,11 @@ const AdminAddQuestions = () => {
               <div key={i} className="mb-2 space-y-1">
                 <input
                   type="text"
-                  placeholder="Input"
+                  placeholder={
+                    form.type === "codingChallenge"
+                      ? 'Input (e.g., ["a", "b", "c"])'
+                      : "Input"
+                  }
                   className="w-full p-2 border rounded"
                   value={test.input}
                   onChange={(e) =>

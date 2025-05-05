@@ -14,6 +14,10 @@ function Navbar() {
     navigate("/");
   };
 
+  const handleAdmin = async () => {
+    navigate("/admin");
+  };
+
   return (
     <nav className="flex items-center justify-between fixed left-0 top-0 w-full bg-white  z-50 p-4 md:px-10">
       <div className="flex justify-between items-center gap-x-4">
@@ -44,7 +48,15 @@ function Navbar() {
         </Link>
       </div>
 
-      <div className="hidden md:flex space-x-3">
+      <div className="hidden md:flex items-center space-x-4">
+        {user?.role === "admin" && (
+          <button
+            onClick={handleAdmin}
+            className="bg-black text-white px-4 py-2 rounded-md font-semibold hover:bg-red-700 transition"
+          >
+            Admin
+          </button>
+        )}
         <h1 className="bg-indigo-200 px-4 py-2 rounded-full">{user?.name}</h1>
       </div>
 
@@ -70,6 +82,14 @@ function Navbar() {
           <Link to="/leaderboard" className="text-black">
             Leaderboard
           </Link>
+          {user?.role === "admin" && (
+            <button
+              onClick={handleAdmin}
+              className="bg-black text-white px-4 py-2 rounded-md font-semibold hover:bg-red-700 transition"
+            >
+              Admin
+            </button>
+          )}
         </div>
       )}
     </nav>

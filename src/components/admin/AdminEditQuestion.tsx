@@ -100,7 +100,7 @@ const EditQuestionPage = () => {
             >
               <option value="flashcard">Flashcard</option>
               <option value="quiz">Quiz</option>
-              <option value="code">Code Challenge</option>
+              <option value="codingChallenge">Code Challenge</option>
             </select>
           </div>
 
