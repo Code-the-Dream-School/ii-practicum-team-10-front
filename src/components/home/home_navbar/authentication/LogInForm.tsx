@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { AuthenticationButtons } from "./AuthenticationButtons";
 
 interface FormErrors {
@@ -31,7 +32,9 @@ export const LogInForm: React.FC<Props> = ({
         onSubmit={handleSubmit}
         className="flex flex-col mt-[55px] gap-[25px] items-center w-[90%] sm:w-[320px] md:w-[400px] lg:w-[400px]"
       >
-        <div className="text-black font-[Roboto Mono] text-[40px] font-bold">Sign In</div>
+        <div className="text-black font-[Roboto Mono] text-[40px] font-bold">
+          Sign In
+        </div>
 
         <div className="flex flex-col gap-6 items-center w-full max-w-[500px] px-4 bg-[#FFC277] py-10 rounded-2xl">
           <input
@@ -44,7 +47,11 @@ export const LogInForm: React.FC<Props> = ({
               errors.email ? "border-red-500 border-2" : "border-gray-300"
             }`}
           />
-          {errors.email && <p className="text-red-500 font-bold text-base mt-1">{errors.email}</p>}
+          {errors.email && (
+            <p className="text-red-500 font-bold text-base mt-1">
+              {errors.email}
+            </p>
+          )}
 
           <input
             type="password"
@@ -56,7 +63,17 @@ export const LogInForm: React.FC<Props> = ({
               errors.password ? "border-red-500 border-2" : "border-gray-300"
             }`}
           />
-          {errors.password && <p className="text-red-500 font-bold text-base mt-1">{errors.password}</p>}
+          {errors.password && (
+            <p className="text-red-500 font-bold text-base mt-1">
+              {errors.password}
+            </p>
+          )}
+          <Link
+            to="/forgot-password"
+            className="text-sm text-blue-600 hover:underline self-end pr-6 mt-[-15px]"
+          >
+            Forgot Password?
+          </Link>
         </div>
 
         <div className="submit-container text-center mt-6">
