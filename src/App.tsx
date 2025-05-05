@@ -14,6 +14,11 @@ import ReactPractice from './components/user/learn/react_practice/ReactPractice'
 import NodeJsPractice from "./components/user/learn/nodejs_practice/NodejsPractice";
 import QuizPage from "./pages/QuizPage";
 import QuizSummaryPage from "./pages/QuizSummaryPage";
+import CssFlashcards from "./components/user/learn/css_practice/CssFlashcards";
+import HtmlFlashcards from "./components/user/learn/html_practice/HtmlFlashcards";
+import JavascriptFlashcards from "./components/user/learn/javascript_folder/JavascriptFlashcards";
+import NodejsFlashcards from "./components/user/learn/nodejs_practice/NodejsFlashcards";
+import ReactFlashcards from "./components/user/learn/react_practice/ReactFlashcards";
 
 const App: React.FC = () => {
 
@@ -50,6 +55,15 @@ const App: React.FC = () => {
           />
                   
         <Route
+          path="/learn/html/flashcards"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <HtmlFlashcards />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/learn/css"
           element={
             <ProtectedRoute requiredRole="user">
@@ -59,10 +73,28 @@ const App: React.FC = () => {
         />
 
         <Route
+          path="/learn/css/flashcards"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <CssFlashcards />
+            </ProtectedRoute>
+          }
+        />
+
+
+        <Route
           path="/learn/javascript"
           element={
             <ProtectedRoute requiredRole="user">
               <JavaScriptPractice />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/learn/javascript/flashcards"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <JavascriptFlashcards />
             </ProtectedRoute>
           }
         />
@@ -72,6 +104,15 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute requiredRole="user">
               <ReactPractice />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/learn/react/flashcards"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <ReactFlashcards />
             </ProtectedRoute>
           }
         />
@@ -101,6 +142,16 @@ const App: React.FC = () => {
             }
           />
       
+
+        <Route
+          path="/learn/nodejs/flashcards"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <NodejsFlashcards />
+            </ProtectedRoute>
+          }
+        />
+        
         <Route
           path="/leaderboard"
           element={
