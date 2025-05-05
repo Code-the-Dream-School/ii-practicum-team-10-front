@@ -1,4 +1,3 @@
-// QuizUI.tsx
 import React from 'react';
 import ProgressBar from './ProgressBar';
 
@@ -41,7 +40,6 @@ const QuizUI: React.FC<QuizUIProps> = ({
    {status === 'completed' && (
         <div className="success-message">
           <p className="text-green-500  font-[Roboto Mono] font-bold text-[30px]"> You've completed the quiz!</p>
-          {/* Maybe show updated progress or move to next quiz */}
         </div>
       )}
 
@@ -115,7 +113,7 @@ const QuizUI: React.FC<QuizUIProps> = ({
         <div className="flex flex-col gap-2 mt-4">
           <p className="text-green-500 font-bold text-[30px]">✅ Correct!</p>
           <div className="flex justify-end gap-4 mt-4">
-            <button onClick={onNext} className="w-32 bg-[#FF7789] hover:bg-[#e76874] text-black font-[Roboto] text-[16px] md:text-[20px] font-bold px-4 py-2 rounded-3xl transition">
+            <button onClick={onNext} className="w-32 bg-[#FF7789] hover:bg-[#e76874] text-black font-[Roboto Mono] text-[16px] md:text-[20px] font-bold px-4 py-2 rounded-3xl transition">
               Next
             </button>
           </div>

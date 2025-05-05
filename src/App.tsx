@@ -13,6 +13,7 @@ import JavaScriptPractice from './components/user/learn/javascript_folder/Javasc
 import ReactPractice from './components/user/learn/react_practice/ReactPractice'
 import NodeJsPractice from "./components/user/learn/nodejs_practice/NodejsPractice";
 import QuizPage from "./pages/QuizPage";
+import QuizSummaryPage from "./pages/QuizSummaryPage";
 
 const App: React.FC = () => {
 
@@ -47,15 +48,7 @@ const App: React.FC = () => {
             </ProtectedRoute>
             }
           />
-          <Route
-            path="/quizpage"
-            element={
-              <ProtectedRoute requiredRole="user">
-                <QuizPage />
-              </ProtectedRoute>
-            }
-          />
-          
+                  
         <Route
           path="/learn/css"
           element={
@@ -91,7 +84,23 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
-        
+            <Route
+            path="/quizpage"
+            element={
+              <ProtectedRoute requiredRole="user">
+                <QuizPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/quiz_summary"
+            element={
+              <ProtectedRoute requiredRole="user">
+                <QuizSummaryPage />
+              </ProtectedRoute>
+            }
+          />
+      
         <Route
           path="/leaderboard"
           element={

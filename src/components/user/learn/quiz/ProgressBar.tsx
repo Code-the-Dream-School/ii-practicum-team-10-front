@@ -4,7 +4,6 @@ interface ProgressBarProps {
   total: number;
 }
 
-
 const topicColorClasses: Record<string, string> = {
   HTML: 'bg-blue-400',
   CSS: 'bg-purple-400',
@@ -14,16 +13,16 @@ const topicColorClasses: Record<string, string> = {
 };
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ topic, completed, total }) => {
+  // Normalize the topic specifically for NodeJS
+  const normalizedTopic = topic.toUpperCase() === 'NODE.js'.toUpperCase() ? 'NODEJS' : topic.toUpperCase();
+
   const percentage = total ? Math.round((completed / total) * 100) : 0;
-  const UpperTopic = topic.toUpperCase();
-  const colorClass = topicColorClasses[UpperTopic] || topicColorClasses.default;
-  // const cleanedTopic = topic?.replace(/[^a-zA-Z]/g, '').toUpperCase();
-  // const selectedColor = topicColorClasses[cleanedTopic] || 'bg-blue-400';
+  const colorClass = topicColorClasses[normalizedTopic] || 'bg-gray-400';
+
   return (
     <div className="w-full">
       <h2 className="flex justify-start text-[25px] font-bold mb-4 text-black text-center">
         {topic.toUpperCase()}
-        {/* {selectedColor} */}
       </h2>
 
       <div className="w-full bg-[#C3C3C3] rounded-full h-6 overflow-hidden">
