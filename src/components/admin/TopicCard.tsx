@@ -25,24 +25,4 @@ const TopicCard = ({ title, color }: TopicCardProps) => {
   );
 };
 
-// const TopicCard = ({ title, color }: TopicCardProps) => {
-//   const nagivate = useNavigate();
-//   return (
-//     <div
-//       key={title}
-//       className={`rounded-2xl p-20 w-70 flex flex-col items-center gap-4 ${color}`}
-//     >
-//       <h2 className="text-xl font-bold">{title}</h2>
-//       <button
-//         onClick={() => {
-//           nagivate(`/admin-questions/${encodeURIComponent(title)}`);
-//         }}
-//         className="w-full bg-white text-black text-lg py-4 rounded-lg hover:bg-green-200 transition"
-//       >
-//         Go to Questions
-//       </button>
-//     </div>
-//   );
-// };
-
 export default TopicCard;
