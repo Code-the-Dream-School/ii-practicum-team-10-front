@@ -271,26 +271,29 @@ const JavaScriptCodingChallenge = () => {
                     <div className="w-full h-screen text-[30px] flex justify-center items-center"><p>Question submitting ...</p></div> 
                 :
                     <div className="flex flex-col justify-center items-center w-full max-w-4xl mx-auto p-4 pt-30">
-                        <div className="w-[850px] h-[100px]">
+                        <div className="w-[350px] h-[100px] lg:w-[850px] md:w-[760px] sm:w-[650px] ">
                             <ExpBar label="JavaScript" value={javaScriptScore}/>
                         </div>
-                        <h2 className="text-xl font-bold w-[850px] mb-4">
+                        <h2 className="text-xl font-bold w-[350px] mb-4 lg:w-[850px] md:w-[760px] sm:w-[650px]">
                             {question}
                         </h2>
 
-                        <Editor
-                            height="400px"
-                            width="850px"
-                            defaultLanguage="javascript"
-                            value={userCode}
-                            onChange={(value) => setUserCode(value || "")}
-                            onMount={onMount}
-                            theme="vs-dark"
-                        />
+                        <div className="w-[350px] lg:w-[850px] md:w-[768px] sm:w-[640px]">
+                            <Editor
+                                height="400px"
+                                width="100%"
+                                defaultLanguage="javascript"
+                                value={userCode}
+                                onChange={(value) => setUserCode(value || "")}
+                                onMount={onMount}
+                                theme="vs-dark"
+                            />
+                        </div>
+
 
                         {showPopup && (
                             <div className="fixed top-15 left-0 w-full h-full flex justify-center items-center z-50">
-                                <div className="bg-white p-6 rounded-lg shadow-lg max-w-md text-center">
+                                <div className="bg-white p-6 rounded-lg shadow-lg max-w-md text-center w-[350px] sm:w-full">
                                 <p className="text-lg font-semibold mb-4">Please pass all the test cases before submitting.</p>
                                 <button
                                     onClick={() => setShowPopup(false)}
@@ -305,7 +308,7 @@ const JavaScriptCodingChallenge = () => {
                         {isRunBtnClicked ? 
                             isLoading ? 
                                 Array.isArray(result) &&  
-                                <div className="flex flex-col justify-center items-center mt-4 bg-gray-100 w-[850px] text-black text-[20px] p-4 rounded">
+                                <div className="flex flex-col justify-center items-center mt-4 bg-gray-100 w-[350px] text-black text-[20px] p-4 rounded lg:w-[850px] md:w-[768px] sm:w-[640px]">
                                     {result.map((res, i) => (
                                         <div
                                             key={res.id}
@@ -328,7 +331,7 @@ const JavaScriptCodingChallenge = () => {
 
                         }
 
-                        <div className="w-[850px] mt-4 flex justify-end items-end gap-3">
+                        <div className="w-[350px] mt-4 flex justify-end items-end gap-3 lg:w-[850px] md:w-[768px] sm:w-[640px]">
                             <button onClick={runTests} className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-400 hover:cursor-pointer"> Run Tests </button>
                             <button onClick={submitJsCodingChallenge} className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-400 hover:cursor-pointer">Submit</button>
                         </div>
