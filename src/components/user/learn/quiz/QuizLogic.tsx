@@ -387,8 +387,10 @@ const QuizLogic: React.FC = () => {
 
     const token = localStorage.getItem('token');
     try {
+      // Normalize the topic specifically for NodeJS
+      const normalizedTopic = topic === 'Node.js' ? 'NodeJS' : topic;
       // Always submit the question (regardless of correct/incorrect)
-      await fetch(`https://ii-practicum-team-10-back.onrender.com/api/v1/training/${topic}/${type}/submit`, {
+      await fetch(`https://ii-practicum-team-10-back.onrender.com/api/v1/training/${normalizedTopic}/${type}/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
