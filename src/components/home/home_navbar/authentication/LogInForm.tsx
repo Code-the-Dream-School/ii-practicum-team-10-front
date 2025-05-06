@@ -68,12 +68,14 @@ export const LogInForm: React.FC<Props> = ({
               {errors.password}
             </p>
           )}
-          <Link
-            to="/forgot-password"
-            className="text-sm text-blue-600 hover:underline self-end pr-6 mt-[-15px]"
-          >
-            Forgot Password?
-          </Link>
+          <div className="flex justify-between w-[90%] px-2 mt-[-10px]">
+            <Link
+              to="/forgot-password"
+              className="text-sm text-blue-600 hover:underline"
+            >
+              Forgot Password?
+            </Link>
+          </div>
         </div>
 
         <div className="submit-container text-center mt-6">

@@ -22,7 +22,10 @@ export const ForgotPassword: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      const res = await axios.post("/api/v1/auth/forgot-password", { email });
+      const res = await axios.post(
+        "https://ii-practicum-team-10-back.onrender.com/api/v1/auth/forgot-password",
+        { email }
+      );
       setMessage(
         res.data.msg || "Password reset email sent. Please check your inbox."
       );
