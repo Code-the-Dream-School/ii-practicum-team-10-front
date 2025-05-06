@@ -15,7 +15,7 @@ export const LogIn = () => {
 
   const navigate = useNavigate();
 
-  if (user) {
+  if (user?.role === "user" || user?.role === "admin") {
     return <Navigate to="/dashboard" />;
   }
 
@@ -41,8 +41,8 @@ export const LogIn = () => {
     }
 
     try {
-      await login(email.trim(), password.trim());
-      navigate("/dashboard"); // redirect after login
+      const loggedInUser = await login(email.trim(), password.trim());
+      navigate("/dashboard");
     } catch (err: any) {
       setErrors({ email: err.message || "Login failed. Please try again." });
     }

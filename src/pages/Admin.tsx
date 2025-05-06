@@ -1,11 +1,13 @@
-const Dashboard = () => {
+import AdminDashboard from "../components/admin/AdminDashboard";
+
+const Admin = () => {
   return (
     <div className="bg-white flex flex-col">
       <div className="flex justify-center items-center h-screen">
-        <h1>This is the dashboard page.</h1>
+        <AdminDashboard />
       </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default Admin;
