@@ -12,6 +12,8 @@ import CssPractice from './components/user/learn/css_practice/CssPractice';
 import JavaScriptPractice from './components/user/learn/javascript_folder/JavascriptPractice';
 import ReactPractice from './components/user/learn/react_practice/ReactPractice'
 import NodeJsPractice from "./components/user/learn/nodejs_practice/NodejsPractice";
+import QuizPage from "./pages/QuizPage";
+import QuizSummaryPage from "./pages/QuizSummaryPage";
 import CssFlashcards from "./components/user/learn/css_practice/CssFlashcards";
 import HtmlFlashcards from "./components/user/learn/html_practice/HtmlFlashcards";
 import JavascriptFlashcards from "./components/user/learn/javascript_folder/JavascriptFlashcards";
@@ -49,9 +51,9 @@ const App: React.FC = () => {
             <ProtectedRoute requiredRole="user">
               <HtmlPractice />
             </ProtectedRoute>
-          }
-        />
-
+            }
+          />
+                  
         <Route
           path="/learn/html/flashcards"
           element={
@@ -123,6 +125,23 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
+            <Route
+            path="/quizpage"
+            element={
+              <ProtectedRoute requiredRole="user">
+                <QuizPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/quiz_summary"
+            element={
+              <ProtectedRoute requiredRole="user">
+                <QuizSummaryPage />
+              </ProtectedRoute>
+            }
+          />
+      
 
         <Route
           path="/learn/nodejs/flashcards"

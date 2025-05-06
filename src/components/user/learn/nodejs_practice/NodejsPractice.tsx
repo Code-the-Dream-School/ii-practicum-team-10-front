@@ -11,7 +11,7 @@ const NodeJsPractice = () => {
         </Card>
         <Card 
           colorClass='bg-green-400' 
-          challengeTitle='Quiz'>
+          challengeTitle='Quiz' route='/quizpage'>
             Test your understanding with conceptual and problem-solving questions. Great for identifying knowledge gaps and reinforcing theoretical concepts.
         </Card>
         <Card 
@@ -19,6 +19,7 @@ const NodeJsPractice = () => {
           challengeTitle='Coding Challenges'>
             Apply your skills with hands-on exercises. Solve algorithm problems, debug code, and build mini-projects to develop real-world coding experience.
         </Card>
+
       </div>
   );
 };
