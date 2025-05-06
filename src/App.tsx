@@ -2,6 +2,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { LogIn } from "./components/home/home_navbar/authentication/LogIn";
 import { SignUp } from "./components/home/home_navbar/authentication/SignUp";
+import { ForgotPassword } from "./components/home/home_navbar/authentication/ForgotPassword";
+import { ResetPassword } from "./components/home/home_navbar/authentication/ResetPassword";
 import Layout from "./pages/Layout";
 import Dashboard from "./components/user/dashboard/Dashboard";
 import Learn from "./pages/Learn";
@@ -32,6 +34,8 @@ const App: React.FC = () => {
         <Route index element={<Home />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route
           path="/dashboard"
           element={
