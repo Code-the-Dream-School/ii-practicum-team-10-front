@@ -1,19 +1,48 @@
-import { useContext } from "react"
-import { AuthContext } from "../contexts/AuthProvider"
+import { useContext } from "react";
+import { AuthContext } from "../contexts/AuthProvider";
 
 const useAuth = () => {
-  const context = useContext(AuthContext)
-  
-  if (!context){
-    throw new Error("useAuth invalid")
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error("useAuth invalid");
   }
-  const { user, login, register, logout, isLoading, selectedClass, setSelectedClass, selectedClassChallenge, setSelectedClassChallenge } = context
+  const {
+    user,
+    login,
+    register,
+    logout,
+    isLoading,
+    selectedClass,
+    setSelectedClass,
+    selectedClassChallenge,
+    setSelectedClassChallenge,
+  } = context;
 
   const isAuthorized = (neededRole: string) => {
-    return user && user.role === neededRole
-  }
+    if (!user) return false;
 
-  return { user, login, register, logout, isAuthorized, isLoading, selectedClass, setSelectedClass, selectedClassChallenge, setSelectedClassChallenge }
-}
+    const roleHierarchy: Record<string, number> = {
+      user: 1,
+      admin: 2,
+    };
 
-export default useAuth
+    return roleHierarchy[user.role] >= roleHierarchy[neededRole];
+    // return user && user.role === neededRole
+  };
+
+  return {
+    user,
+    login,
+    register,
+    logout,
+    isAuthorized,
+    isLoading,
+    selectedClass,
+    setSelectedClass,
+    selectedClassChallenge,
+    setSelectedClassChallenge,
+  };
+};
+
+export default useAuth;
