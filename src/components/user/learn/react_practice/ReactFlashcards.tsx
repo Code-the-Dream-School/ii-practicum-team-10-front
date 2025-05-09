@@ -17,7 +17,7 @@ const ReactFlashcards: React.FC = () => {
     <div className="p-6 mt-3">
       <h1 className="text-2xl font-bold mb-4">React Flashcards</h1>
       <Flashcard 
-        topic="NodeJS" 
+        topic="React" 
         token={token} 
         userId={user.userId}
         colorClass={getSubjectColor("react")} 

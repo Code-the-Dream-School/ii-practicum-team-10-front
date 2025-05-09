@@ -78,7 +78,7 @@ const DynamicSubjectProgress: React.FC<DynamicSubjectProgressProps> = ({
             <div id={subject.subject} key={subject.subject} className="mb-4">
               <ExpBar
                 label={subject.subject}
-                value={subject.progress}
+                value={(subject.progress)*0.3}
                 color={getSubjectColor(subject.subject)}
               />
             </div>
@@ -89,4 +89,3 @@ const DynamicSubjectProgress: React.FC<DynamicSubjectProgressProps> = ({
 };
 
 export default DynamicSubjectProgress;
-

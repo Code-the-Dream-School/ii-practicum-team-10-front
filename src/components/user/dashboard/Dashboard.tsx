@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -42,6 +41,8 @@ const Dashboard: React.FC = () => {
             },
           }
         );
+        console.log("Fetched progress data:", response.data);
+
         setOverallProgress(Number(response.data.progress.overall));
       } catch (error) {
         console.error("Failed to fetch overall progress:", error);
@@ -90,6 +91,7 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
+
 
 
 
