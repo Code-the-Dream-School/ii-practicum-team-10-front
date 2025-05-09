@@ -33,7 +33,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ topic, completed, total }) =>
       </div>
 
       <p className="mt-2 text-sm font-bold text-black text-[20px] text-center flex justify-end">
-        {percentage}/100EXP
+        {percentage}/100%
       </p>
     </div>
   );

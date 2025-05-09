@@ -32,6 +32,7 @@ const QuizLogic: React.FC = () => {
   const [status, setStatus] = useState<AnswerStatus>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [answersHistory, setAnswersHistory] = useState<string[][]>([]);
 
   // Refs for tracking correct/incorrect answers and progress
   const correctAnswersRef = useRef(0);
@@ -85,14 +86,18 @@ const QuizLogic: React.FC = () => {
         console.log('Fetched questions:', data);
 
         if (data.length === 0) {
-          navigate('/quiz_summary', {
+          navigate('/summary', {
             state: {
               topic,
+              taskType: 'quiz', 
               correctAnswersCount: 0,
               incorrectAnswersCount: 0,
               totalQuestions: 0,
+              allQuestions: [],
+              selectedAnswersHistory: [],
             },
           });
+        
           return;
         }
 
@@ -124,7 +129,8 @@ const QuizLogic: React.FC = () => {
   const handleSubmit = async () => {
     const correct = isAnswerCorrect();
     setStatus(correct ? 'correct' : 'incorrect');
-
+    //
+    setAnswersHistory(prev => [...prev, selectedAnswers]);
     // Update counts for correct and incorrect answers
     if (correct) {
       correctAnswersRef.current += 1;
@@ -176,19 +182,21 @@ const QuizLogic: React.FC = () => {
     }
   };
 
-  // If it's the last question, navigate to QuizSummaryPage
-  useEffect(() => {
-    if (status === 'completed') {
-      navigate('/quiz_summary', {
-        state: {
-          topic,
-          correctAnswersCount: correctAnswersRef.current,
-          incorrectAnswersCount: incorrectAnswersRef.current,
-          totalQuestions: questions.length,
-        },
-      });
-    }
-  }, [status, navigate, topic, questions.length]);
+useEffect(() => {
+  if (status === 'completed') {
+    navigate('/summary', {
+      state: {
+        topic,
+        taskType: 'quiz',
+        correctAnswersCount: correctAnswersRef.current,
+        incorrectAnswersCount: incorrectAnswersRef.current,
+        totalQuestions: questions.length,
+        allQuestions: questions,
+        selectedAnswersHistory: answersHistory,
+      },
+    });
+  }
+}, [status, navigate, topic, questions, answersHistory]);
 
   const handleTryAgain = () => {
     setSelectedAnswers([]);
