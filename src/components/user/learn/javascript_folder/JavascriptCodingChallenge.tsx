@@ -22,7 +22,15 @@ const JavaScriptCodingChallenge = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isQuestionLoading, setIsQuestionLoading] = useState(true);
     const [isRunBtnClicked, setIsRunBtnClicked] = useState(false);
-    const [javaScriptScore, setJavaScriptScore] = useState<number>(0);
+    
+    // User progress
+    const [javaScriptProgress, setJavaScriptProgress] = useState<number>(0);
+    const [htmlProgress, setHtmlProgress] = useState<number>(0);
+    const [cssProgress, setCssProgress] = useState<number>(0);
+    const [reactProgress, setReactProgress] = useState<number>(0);
+    const [nodejsProgress, setNodejsProgress] = useState<number>(0);
+    const [overallProgress, setOverallProgress] = useState<number>(0);
+
     const [numberOfQuestions, setNumberOfQuestions] = useState<number>(0);
     const [isQuestionSubmitting, setIsQuestionSubmitting] = useState(false);
 
@@ -44,7 +52,12 @@ const JavaScriptCodingChallenge = () => {
             })
 
             const data = await response.json();
-            setJavaScriptScore(data.progress.javaScript);
+            setJavaScriptProgress(data.progress.javaScript);
+            setHtmlProgress(data.progress.html);
+            setCssProgress(data.progress.css);
+            setReactProgress(data.progress.react);
+            setNodejsProgress(data.progress.nodejs);
+            setOverallProgress(data.progress.overall);
         } catch {
             throw console.error();
             
@@ -61,7 +74,12 @@ const JavaScriptCodingChallenge = () => {
             },
             body: JSON.stringify({
                 "progress": {
-                    "javaScript": progressValue
+                    "css": cssProgress,
+                    "html": htmlProgress,
+                    "javaScript": progressValue,
+                    "react": reactProgress,
+                    "nodejs": nodejsProgress,
+                    "overall": overallProgress
                     },
             }),
           });
@@ -139,11 +157,10 @@ const JavaScriptCodingChallenge = () => {
 
             const data = await response.json();
 
-            console.log("USER PROGRESS", javaScriptScore)
-            updateProgress(javaScriptScore + 10);
+            console.log("USER PROGRESS", javaScriptProgress)
+            updateProgress(javaScriptProgress + 10);
 
             console.log("SUBMITTED DATA: ", data);
-            setIsQuestionSubmitting(false);
         } catch(error) {
             throw console.error();
         }
@@ -191,6 +208,13 @@ const JavaScriptCodingChallenge = () => {
         setIsLoading(false);
         setIsRunBtnClicked(true);
 
+        console.log("JAVA", javaScriptProgress);
+        console.log("HTML", htmlProgress);
+        console.log("CSS", cssProgress);
+        console.log("REACT", reactProgress);
+        console.log("NODEJS", nodejsProgress);
+        console.log("OVERALL", overallProgress);
+
         const sourceCode = editorRef.current?.getValue();
         if (!sourceCode) return;
       
@@ -198,10 +222,10 @@ const JavaScriptCodingChallenge = () => {
       
         const testResults: { passed: boolean; output: string; expectedOutput: string }[] = [];
         // console.log("SOURCE CODE", sourceCode);
-        console.log("FUNCTION NAME", functionName);
+        // console.log("FUNCTION NAME", functionName);
       
         for (const test of questionTests) {
-            console.log("TEST", test)
+            // console.log("TEST", test)
             const wrappedCode = `
             ${sourceCode}
             
@@ -228,13 +252,13 @@ const JavaScriptCodingChallenge = () => {
             const data = await response.json();
             // console.log("DATA", data)
             const output = data.run.stdout.trim();
-            console.log("OUTPUT", output)
-            console.log("OUTPUT TYPE", typeof(output))
+            // console.log("OUTPUT", output)
+            // console.log("OUTPUT TYPE", typeof(output))
             const expectedOutput = test.expectedOutput;
-            console.log("EXPECTED OUTPUT", output)
-            console.log("EXPECTED OUTPUT TYPE", typeof(output))
+            // console.log("EXPECTED OUTPUT", output)
+            // console.log("EXPECTED OUTPUT TYPE", typeof(output))
             const passed = isOutputEqual(output, expectedOutput);
-            console.log("PASSED?", passed)
+            // console.log("PASSED?", passed)
       
             testResults.push({
               passed,
@@ -272,7 +296,7 @@ const JavaScriptCodingChallenge = () => {
                 :
                     <div className="flex flex-col justify-center items-center w-full max-w-4xl mx-auto p-4 pt-30">
                         <div className="w-[350px] h-[100px] lg:w-[850px] md:w-[760px] sm:w-[650px] ">
-                            <ExpBar label="JavaScript" value={javaScriptScore}/>
+                            <ExpBar label="JavaScript" value={javaScriptProgress}/>
                         </div>
                         <h2 className="text-xl font-bold w-[350px] mb-4 lg:w-[850px] md:w-[760px] sm:w-[650px]">
                             {question}
