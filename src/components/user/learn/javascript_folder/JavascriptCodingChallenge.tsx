@@ -1,6 +1,7 @@
 import ExpBar from "../../shared/ExpBar";
 import useAuth from "../../../../hooks/useAuth";
 import { useState, useEffect, useRef, version } from "react";
+import { useNavigate } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
 import JavaScriptCodingChallengeOutput from "./JavascriptCodingChallengeOutput";
@@ -8,12 +9,15 @@ import JavaScriptCodingChallengeOutput from "./JavascriptCodingChallengeOutput";
 const JavaScriptCodingChallenge = () => {
     const { user } = useAuth();
     const token = localStorage.getItem("token");
-    
+    const navigate = useNavigate();
+
+    // Question data
     const [question, setQuestion] = useState<string>();
     const [questionTests, setQuestionTests] = useState<any[]>([]);
     const [questionId, setQuestionId] = useState<number>();
     const [functionName, setFunctionName] = useState<string>();
 
+    // Logic
     const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
     const [userCode, setUserCode] = useState("// Write your code here");
     const [result, setResult] = useState<any[] | null>(null);
@@ -22,6 +26,8 @@ const JavaScriptCodingChallenge = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isQuestionLoading, setIsQuestionLoading] = useState(true);
     const [isRunBtnClicked, setIsRunBtnClicked] = useState(false);
+    const [elapsedTime, setElapsedTime] = useState(0);
+    const [finalTime, setFinalTime] = useState<string | null>(null);
     
     // User progress
     const [javaScriptProgress, setJavaScriptProgress] = useState<number>(0);
@@ -34,6 +40,7 @@ const JavaScriptCodingChallenge = () => {
     const [numberOfQuestions, setNumberOfQuestions] = useState<number>(0);
     const [isQuestionSubmitting, setIsQuestionSubmitting] = useState(false);
 
+    // API
     const baseUrl = import.meta.env.VITE_API_JS_CODING_CHALLENGE_URL;
     const jsCodingChallengeUrl = `${baseUrl}JavaScript/codingChallenge`
     const submitJsCodingChallengeUrl = `${baseUrl}JavaScript/codingChallenge/submit`
@@ -89,8 +96,6 @@ const JavaScriptCodingChallenge = () => {
           }
           
           const data = await response.json();
-          console.log("Progress updated:", data);
-          window.location.reload();
       
         } catch (error) {
           console.error("Failed to update progress:", error);
@@ -108,11 +113,6 @@ const JavaScriptCodingChallenge = () => {
                 }
             })
             const data = await response.json();
-            // console.log("Question", data[0].questionText);
-            // console.log("QuestionID", data[0].id);
-            // console.log("QuestionTESTS", data[0].tests);
-            // console.log("Questions QUANTITY", data.length)
-            console.log("Number of Questions: ", data.length);
 
             if (data.length > 0) {
                 const questionText = data[0].questionText;
@@ -157,10 +157,20 @@ const JavaScriptCodingChallenge = () => {
 
             const data = await response.json();
 
-            console.log("USER PROGRESS", javaScriptProgress)
             updateProgress(javaScriptProgress + 10);
-
-            console.log("SUBMITTED DATA: ", data);
+            const timeTaken = formatElapsedTime(elapsedTime);
+            setFinalTime(timeTaken);
+            navigate("/coding-challenge-summary", {
+                state: {
+                    classType: 'JavaScript',
+                    finalTime: timeTaken,
+                    route: '/learn/javascript/coding-challenge',
+                    questionId,
+                    javaScriptProgress: javaScriptProgress + 10, // Updated value
+                    userCode,
+                    result,
+                },
+              });
         } catch(error) {
             throw console.error();
         }
@@ -170,7 +180,26 @@ const JavaScriptCodingChallenge = () => {
     useEffect(() => {
         fetchJsCodingChallenge();
         fetchUserProgress();
+
+        // Start timer
+        const timerId = setInterval(() => {
+            setElapsedTime(prev => prev + 1);
+        }, 1000);
+
+        // Cleanup timer on unmount
+        return () => clearInterval(timerId);
     }, [])
+
+    const formatElapsedTime = (seconds: number) => {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = seconds % 60;
+        return [
+          h > 0 ? String(h).padStart(2, '0') : null,
+          String(m).padStart(2, '0'),
+          String(s).padStart(2, '0'),
+        ].filter(Boolean).join(':');
+      };
 
     {/* Places the cursor inside the editor on load */}
     const onMount = (editor) => {
@@ -208,24 +237,14 @@ const JavaScriptCodingChallenge = () => {
         setIsLoading(false);
         setIsRunBtnClicked(true);
 
-        console.log("JAVA", javaScriptProgress);
-        console.log("HTML", htmlProgress);
-        console.log("CSS", cssProgress);
-        console.log("REACT", reactProgress);
-        console.log("NODEJS", nodejsProgress);
-        console.log("OVERALL", overallProgress);
-
         const sourceCode = editorRef.current?.getValue();
         if (!sourceCode) return;
       
         if (!questionTests || questionTests.length === 0) return;
       
         const testResults: { passed: boolean; output: string; expectedOutput: string }[] = [];
-        // console.log("SOURCE CODE", sourceCode);
-        // console.log("FUNCTION NAME", functionName);
       
         for (const test of questionTests) {
-            // console.log("TEST", test)
             const wrappedCode = `
             ${sourceCode}
             
@@ -250,15 +269,9 @@ const JavaScriptCodingChallenge = () => {
             });
       
             const data = await response.json();
-            // console.log("DATA", data)
             const output = data.run.stdout.trim();
-            // console.log("OUTPUT", output)
-            // console.log("OUTPUT TYPE", typeof(output))
             const expectedOutput = test.expectedOutput;
-            // console.log("EXPECTED OUTPUT", output)
-            // console.log("EXPECTED OUTPUT TYPE", typeof(output))
             const passed = isOutputEqual(output, expectedOutput);
-            // console.log("PASSED?", passed)
       
             testResults.push({
               passed,
@@ -277,8 +290,6 @@ const JavaScriptCodingChallenge = () => {
 
           await sleep(200);
         }
-      
-        console.log("TEST RESULTS", testResults);
       
         setResult(testResults);
         setPassedAllTests(testResults.every(test => test.passed));
@@ -355,9 +366,14 @@ const JavaScriptCodingChallenge = () => {
 
                         }
 
-                        <div className="w-[350px] mt-4 flex justify-end items-end gap-3 lg:w-[850px] md:w-[768px] sm:w-[640px]">
-                            <button onClick={runTests} className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-400 hover:cursor-pointer"> Run Tests </button>
-                            <button onClick={submitJsCodingChallenge} className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-400 hover:cursor-pointer">Submit</button>
+                        <div className="w-[350px] flex justify-between items-end gap-3 lg:w-[850px] md:w-[768px] sm:w-[640px]">
+                            <div className="w-[300px] text-xl font-semibold p-2">
+                                    Time Elapsed: {formatElapsedTime(elapsedTime)}
+                            </div>
+                            <div className="w-[350px] mt-4 flex justify-end items-end gap-3 lg:w-[850px] md:w-[768px] sm:w-[640px]">
+                                <button onClick={runTests} className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-400 hover:cursor-pointer"> Run Tests </button>
+                                <button onClick={submitJsCodingChallenge} className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-400 hover:cursor-pointer">Submit</button>
+                            </div>
                         </div>
                     </div>
             :

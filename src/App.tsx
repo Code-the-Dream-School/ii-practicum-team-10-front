@@ -27,6 +27,7 @@ import JavascriptFlashcards from "./components/user/learn/javascript_folder/Java
 import NodejsFlashcards from "./components/user/learn/nodejs_practice/NodejsFlashcards";
 import ReactFlashcards from "./components/user/learn/react_practice/ReactFlashcards";
 import SummaryPage from "./pages/SummaryPage";
+import CodingChallengeSummary from "./components/user/learn/summary/CodingChallengeSummary";
 
 
 
@@ -114,6 +115,15 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute requiredRole="user">
               <JavaScriptCodingChallenge />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/coding-challenge-summary"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <CodingChallengeSummary />
             </ProtectedRoute>
           }
         />
