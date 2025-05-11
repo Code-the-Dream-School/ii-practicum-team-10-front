@@ -12,7 +12,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   register: (
     name: string,
     email: string,
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [selectedClassChallenge, setSelectedClassChallenge] = useState<string>("");
 
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<User> => {
     setIsLoading(true);
     try {
       const resp = await api.login(email, password);
@@ -51,6 +51,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(userData.user);
       localStorage.setItem("user", JSON.stringify(userData.user));
       localStorage.setItem("token", userData.token);
+      return userData.user;
     } catch (err) {
       throw err;
     } finally {

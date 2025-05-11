@@ -11,7 +11,7 @@ const CssPractice = () => {
         </Card>
         <Card 
           colorClass='bg-purple-400' 
-          challengeTitle='Quiz'>
+          challengeTitle='Quiz' route='/quizpage'>
             Test your understanding with conceptual and problem-solving questions. Great for identifying knowledge gaps and reinforcing theoretical concepts.
         </Card>
       </div>
