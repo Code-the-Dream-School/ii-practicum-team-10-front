@@ -3,6 +3,8 @@ import axios from "axios";
 import classNames from "classnames";
 import ExpBar from "./ExpBar";
 import { getSubjectColor } from "../../../utils/getSubjectColor";
+import { calculateOverallProgress } from "../../../utils/calculateOverallProgress";
+
 
 interface FlashcardData {
   questionId: string;
@@ -17,12 +19,29 @@ interface FlashcardProps {
   colorClass?: string;
 }
 
-// Creating an axios instance for API requests
+//Normalize topic names to match what Swagger expects
+const normalizeTopic = (rawTopic: string): string => {
+  const map: Record<string, string> = {
+    css: "CSS",
+    html: "HTML",
+    javascript: "JavaScript",
+    react: "React",
+    nodejs: "NodeJS",
+  };
+  return map[rawTopic.toLowerCase()] || rawTopic;
+};
+
+// const normalizeTopic = (rawTopic: string): string => {
+//     return rawTopic.toLowerCase(); // Always return lowercase
+//   };
+
+
+// Axios instance
 const api = axios.create({
   baseURL: "https://ii-practicum-team-10-back.onrender.com/api/v1/",
 });
 
-// Adding the token to every request if it exists
+// Add token to headers
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token && config.headers) {
@@ -31,15 +50,14 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Error handling
+// Handle unauthorized
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Unauthorized access, redirect to login
       localStorage.removeItem("user");
       localStorage.removeItem("token");
-      window.location.href = "/login"; // Redirect to login page
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }
@@ -52,12 +70,11 @@ const Flashcard: React.FC<FlashcardProps> = ({ topic, userId, colorClass }) => {
   const [loading, setLoading] = useState(true);
   const [completedCount, setCompletedCount] = useState(0);
 
+  const normalizedTopic = normalizeTopic(topic);
 
-
-const fetchFlashcards = async () => {
+  const fetchFlashcards = async () => {
     try {
-      const response = await api.get(`training/${topic}/flashcard`);
-      console.log("Flashcards response:", response.data);
+      const response = await api.get(`training/${normalizedTopic}/flashcard`);
       setFlashcards(
         response.data.map((item: any) => ({
           questionId: item.id,
@@ -71,12 +88,15 @@ const fetchFlashcards = async () => {
       setLoading(false);
     }
   };
-  
-  
 
   const submitFlashcard = async (questionId: string) => {
     try {
-      await api.post(`training/${topic.toUpperCase()}/flashcard/submit`, { questionId });
+      const payload = {
+        questionId,
+        userId,
+        topic: normalizedTopic,
+      };
+      await api.post(`training/${normalizedTopic}/flashcard/submit`, payload);
     } catch (error) {
       console.error("Failed to submit flashcard:", error);
     }
@@ -84,15 +104,45 @@ const fetchFlashcards = async () => {
 
   const updateProgress = async (progressValue: number) => {
     try {
+      const newProgress = { [normalizedTopic]: progressValue }; // Update only the current topic
+        console.log("New progress payload:", newProgress);
+      const { data } = await api.get(`user/${userId}/progress`);
+      const currentProgress = data.progress || {};
+       console.log("Current progress:", currentProgress);
+
+       const deNormolizedTopic = (rawTopic: string): string => {
+        const map: Record<string, string> = {
+          CSS: "css",
+          HTML: "html",
+          JAVASCRIPT: "javaScript",
+          REACT: "react",
+          NODEJS: "nodejs",
+        };
+        return map[rawTopic.toUpperCase()] || rawTopic;
+      };
+    
+        const deNormalizedTopic = deNormolizedTopic(normalizedTopic);
+        newProgress[deNormalizedTopic] = progressValue; // Update the de-normalized topic name
+      const updatedProgress = {
+        ...currentProgress,
+        ...newProgress,
+      };
+  
+      updatedProgress["overall"] = calculateOverallProgress(updatedProgress);
+  
+      console.log("Updating progress with payload:", updatedProgress);
+  
       await api.post(`user/${userId}/progress`, {
-        progress: {
-          [topic.toUpperCase()]: progressValue,
-        },
+        progress: updatedProgress,
       });
     } catch (error) {
       console.error("Failed to update progress:", error);
     }
   };
+  
+  
+
+  
 
   useEffect(() => {
     fetchFlashcards();
@@ -121,6 +171,7 @@ const fetchFlashcards = async () => {
   const currentFlashcard = flashcards[currentIndex];
   const progressValue = Math.round((completedCount / flashcards.length) * 100);
   const effectiveColor = colorClass || getSubjectColor(topic);
+
   return (
     <div className="flex flex-col items-center">
       <h2 className="text-xl font-bold mb-4">
@@ -139,8 +190,7 @@ const fetchFlashcards = async () => {
             }
           )}
         >
-         
-         <div className={classNames(
+          <div className={classNames(
             "absolute inset-0 p-6 flex items-center justify-center backface-hidden rounded-2xl", effectiveColor)}>
             <p className="text-white text-lg">{currentFlashcard.question}</p>
           </div>
@@ -151,7 +201,7 @@ const fetchFlashcards = async () => {
       </div>
 
       <div className="w-96 mb-4">
-        <ExpBar label={topic} value={progressValue} />
+        <ExpBar label={normalizedTopic} value={progressValue} />
       </div>
 
       <div className="flex gap-4">
