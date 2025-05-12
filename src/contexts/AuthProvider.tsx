@@ -10,6 +10,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
+  setUser: (user: User | null) => void;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<User>;
   register: (
@@ -38,8 +39,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
   const [selectedClass, setSelectedClass] = useState<string>("");
-  const [selectedClassChallenge, setSelectedClassChallenge] = useState<string>("");
-
+  const [selectedClassChallenge, setSelectedClassChallenge] =
+    useState<string>("");
 
   const login = async (email: string, password: string): Promise<User> => {
     setIsLoading(true);
@@ -87,7 +88,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, isLoading, selectedClass, setSelectedClass, selectedClassChallenge, setSelectedClassChallenge }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser,
+        login,
+        register,
+        logout,
+        isLoading,
+        selectedClass,
+        setSelectedClass,
+        selectedClassChallenge,
+        setSelectedClassChallenge,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
