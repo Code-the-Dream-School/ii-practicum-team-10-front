@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { AuthenticationButtons } from "./AuthenticationButtons";
+import { GoogleLogin } from "./GoogleLogin";
 
 interface FormErrors {
   email?: string;
@@ -86,6 +87,7 @@ export const LogInForm: React.FC<Props> = ({
             className="transition-all duration-300"
           />
         </div>
+        <GoogleLogin />
       </form>
     </div>
   );
