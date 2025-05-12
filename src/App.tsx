@@ -27,8 +27,6 @@ import NodejsFlashcards from "./components/user/learn/nodejs_practice/NodejsFlas
 import ReactFlashcards from "./components/user/learn/react_practice/ReactFlashcards";
 import SummaryPage from "./pages/SummaryPage";
 
-
-
 const App: React.FC = () => {
   return (
     <Routes>
@@ -61,9 +59,9 @@ const App: React.FC = () => {
             <ProtectedRoute requiredRole="user">
               <HtmlPractice />
             </ProtectedRoute>
-            }
-          />
-                  
+          }
+        />
+
         <Route
           path="/learn/html/flashcards"
           element={
@@ -134,17 +132,22 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
-            <Route
-            path="/quizpage"
-            element={
-              <ProtectedRoute requiredRole="user">
-                <QuizPage />
-              </ProtectedRoute>
-            }
-          />
-            <Route path="/summary" element={<ProtectedRoute requiredRole="user">
-               <SummaryPage/>
-            </ProtectedRoute>} /> 
+        <Route
+          path="/quizpage"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <QuizPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/summary"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <SummaryPage />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/learn/nodejs/flashcards"
