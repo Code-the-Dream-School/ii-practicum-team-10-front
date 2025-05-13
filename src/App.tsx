@@ -19,6 +19,7 @@ import CssPractice from "./components/user/learn/css_practice/CssPractice";
 import JavaScriptPractice from "./components/user/learn/javascript_folder/JavascriptPractice";
 import ReactPractice from "./components/user/learn/react_practice/ReactPractice";
 import NodeJsPractice from "./components/user/learn/nodejs_practice/NodejsPractice";
+import JavaScriptCodingChallenge from "./components/user/learn/javascript_folder/JavascriptCodingChallenge";
 import QuizPage from "./pages/QuizPage";
 import CssFlashcards from "./components/user/learn/css_practice/CssFlashcards";
 import HtmlFlashcards from "./components/user/learn/html_practice/HtmlFlashcards";
@@ -26,8 +27,7 @@ import JavascriptFlashcards from "./components/user/learn/javascript_folder/Java
 import NodejsFlashcards from "./components/user/learn/nodejs_practice/NodejsFlashcards";
 import ReactFlashcards from "./components/user/learn/react_practice/ReactFlashcards";
 import SummaryPage from "./pages/SummaryPage";
-
-
+import CodingChallengeSummary from "./components/user/learn/summary/CodingChallengeSummary";
 
 const App: React.FC = () => {
   return (
@@ -61,9 +61,9 @@ const App: React.FC = () => {
             <ProtectedRoute requiredRole="user">
               <HtmlPractice />
             </ProtectedRoute>
-            }
-          />
-                  
+          }
+        />
+
         <Route
           path="/learn/html/flashcards"
           element={
@@ -109,6 +109,24 @@ const App: React.FC = () => {
         />
 
         <Route
+          path="/learn/javascript/coding-challenge"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <JavaScriptCodingChallenge />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/coding-challenge-summary"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <CodingChallengeSummary />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/learn/react"
           element={
             <ProtectedRoute requiredRole="user">
@@ -134,17 +152,22 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
-            <Route
-            path="/quizpage"
-            element={
-              <ProtectedRoute requiredRole="user">
-                <QuizPage />
-              </ProtectedRoute>
-            }
-          />
-            <Route path="/summary" element={<ProtectedRoute requiredRole="user">
-               <SummaryPage/>
-            </ProtectedRoute>} /> 
+        <Route
+          path="/quizpage"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <QuizPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/summary"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <SummaryPage />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/learn/nodejs/flashcards"

@@ -18,13 +18,13 @@ const Leaderboard: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     
     const url = import.meta.env.VITE_API_TOP_USERS_URL;
-    const userProgressUrl = `https://ii-practicum-team-10-back.onrender.com/api/v1/user/${user?.userId}/progress`;
+    const userProgressUrlBase = import.meta.env.VITE_API_USER_PROGRESS_URL;
+    const userProgressUrl = `${userProgressUrlBase}${user?.userId}/progress`;
     const backendServerUrl = import.meta.env.VITE_API_SERVER;
 
-    const fetchUserProgress = async () => {
+    const pfp = user?.profilePicture;
 
-        // console.log("CLASS", selectedClass);
-        // console.log("CHALLENGE", selectedClassChallenge);
+    const fetchUserProgress = async () => {
         try {
             const response = await fetch(userProgressUrl, {
                 method: "GET",
@@ -80,14 +80,11 @@ const Leaderboard: React.FC = () => {
             })
             setRankedUsers(topUsers);
             setIsLoading(false);
-            // console.log("SUCESSFUL DATA", data);
         } catch {
             throw console.error();
             
         }
     }
-
-    // useEffect()
     
     useEffect(() => {
         if (token) {
@@ -98,7 +95,7 @@ const Leaderboard: React.FC = () => {
 
     return (
         <div className="flex flex-col justify-center items-center min-h-screen md:flex-row">
-            <UserCharacterSummary cssScore={cssScore} htmlScore={htmlScore} javaScriptScore={javaScriptScore} nodeJsScore={nodeJsScore} reactScore={reactScore} overallScore={overallScore}/>
+            <UserCharacterSummary isLoading={isLoading} pfp={pfp} cssScore={cssScore} htmlScore={htmlScore} javaScriptScore={javaScriptScore} nodeJsScore={nodeJsScore} reactScore={reactScore} overallScore={overallScore}/>
             {isLoading ? <div className='flex justify-center items-center w-90'><p className='font-semibold text-3xl'>Loading ...</p></div> : <Ranking rankedUsers={rankedUsers}/>}
         </div>
     

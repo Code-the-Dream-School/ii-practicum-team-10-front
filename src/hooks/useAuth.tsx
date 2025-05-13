@@ -9,6 +9,7 @@ const useAuth = () => {
   }
   const {
     user,
+    setUser,
     login,
     register,
     logout,
@@ -33,6 +34,7 @@ const useAuth = () => {
 
   return {
     user,
+    setUser,
     login,
     register,
     logout,
