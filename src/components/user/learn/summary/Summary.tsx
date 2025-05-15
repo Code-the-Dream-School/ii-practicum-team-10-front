@@ -55,6 +55,18 @@ const Summary: React.FC = () => {
     selectedAnswersHistory,
   } = state as LocationState;
 
+ const topicColorClasses: Record<string, string> = {
+    HTML: 'bg-blue-100',
+    CSS: 'bg-purple-100',
+    JAVASCRIPT: 'bg-yellow-100',
+    REACT: 'bg-orange-100',
+    NODEJS: 'bg-green-100',
+  };
+
+  const normalizedTopic = topic.toUpperCase() === 'NODE.JS' ? 'NODEJS' : topic.toUpperCase();
+  const backgroundColorClass = topicColorClasses[normalizedTopic] || 'bg-gray-200';
+
+
   // Check if a specific answer is correct
   const isCorrect = (i: number) => {
     const user = [...selectedAnswersHistory[i]].sort();
@@ -67,12 +79,12 @@ const Summary: React.FC = () => {
 
   return (
    
-      <div className="max-w-3xl mx-auto mt-10 p-6  rounded-4xl shadow-lg  border-black border-3 bg-[#D9D9D9]">
+       <div className={`max-w-3xl mx-auto mt-10 p-6 rounded-4xl shadow-lg border-black border-3 ${backgroundColorClass}`}>
         <h2 className="text-2xl font-bold mb-4"> Answers:
-          {/* {taskType === 'quiz' ? 'Quiz Summary' : 'Code Challenge Summary'}: {topic} */}
+    
         </h2>
 
-        <div className="max-h-48 overflow-y-auto p-4 bg-[#D9D9D9] space-y-4 font-['Roboto Mono']  rounded-lg text-2xl font-semibold">
+        <div className={`max-h-48 overflow-y-auto p-4  space-y-4 font-['Roboto Mono']  rounded-lg text-2xl font-semibold  ${backgroundColorClass}`}>
           {allQuestions.map((q, i) => (
             <React.Fragment key={q.id}>
               <p className="font-semibold">
@@ -81,11 +93,11 @@ const Summary: React.FC = () => {
                   ? (q as Question).questionText
                   : (q as CodeChallenge).challengeText}
               </p>
-              <p className={isCorrect(i) ? 'text-green-600' : 'text-red-600'}>
+              <p className={isCorrect(i) ? 'text-black' : 'text-red-600'}>
                 {isCorrect(i) ? 'Correct' : 'Incorrect'}: {selectedAnswersHistory[i].join(', ') || 'No answer'}
               </p>
               {!isCorrect(i) && (
-                <p className="text-green-600">
+                <p className="text-black">
                   Correct:{' '}
                   {taskType === 'quiz'
                     ? (q as Question).answers.join(', ')
