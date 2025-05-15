@@ -166,7 +166,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ topic, userId, colorClass }) => {
 
   if (loading) return <p className="m-6">Loading flashcards...</p>;
   if (flashcards.length === 0) return <p className="m-6">No flashcards available.</p>;
-  if (currentIndex >= flashcards.length) return  <div className="max-w-3xl mx-auto mt-10 p-6 rounded-4xl shadow-lg  border-black border-3 bg-[#D9D9D9]"><p className="text-lg items-center" >You completed {completedCount} flashcards on {topic}.</p> </div>
+  if (currentIndex >= flashcards.length) return  <div className={`max-w-3xl mx-auto mt-10 p-6 rounded-4xl shadow-lg border-black border-3 ${colorClass}`}><p className="text-lg " ><p className="text-xlg italic">Great Job! </p>You completed {completedCount} flashcards on {topic}.</p> </div>
 
   const currentFlashcard = flashcards[currentIndex];
   const progressValue = Math.round((completedCount / flashcards.length) * 100);
